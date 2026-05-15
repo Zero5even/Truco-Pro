@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: barrio-tiro-federal-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://jmasciar82:Rami%402010@cluster0.11wcxjb.mongodb.net/
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production

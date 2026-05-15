@@ -1,0 +1,45 @@
+.meta-form {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.meta-form input {
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.meta-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.prioridad-box {
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.prioridad-box .alta { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
+
+.meta-form button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.meta-form button:hover { opacity: 0.9; }

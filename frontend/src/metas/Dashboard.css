@@ -1,0 +1,67 @@
+:root {
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --primary: #4f46e5;
+  --hecho: #22c55e;
+  --parcial: #eab308;
+  --no-hecho: #ef4444;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.dashboard h2 {
+  font-size: 2rem;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+}
+
+/* Métricas */
+.dashboard-metrica {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.metrica-textos {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.metrica-bar {
+  display: flex;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.metrica-bar-hecho { background-color: var(--hecho); }
+.metrica-bar-parcial { background-color: var(--parcial); }
+.metrica-bar-no-hecho { background-color: var(--no-hecho); }
+
+.metrica-resumen {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Grid de Metas */
+.metas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}

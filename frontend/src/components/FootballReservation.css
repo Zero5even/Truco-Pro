@@ -1,0 +1,133 @@
+/* FootballReservation.css: estilo deportivo, mobile first */
+
+.football-wrapper {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 12px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  color: #fff;
+}
+
+/* header */
+.football-header {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.football-title {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size: 20px;
+  color: #00b0ff;
+  font-weight:700;
+}
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+
+.football-datepicker {
+    font-size: 20px !important;
+  padding: 8px;
+  border: none!important;           /* ❌ elimina el borde */
+  outline: none;           /* ❌ elimina el borde azul al hacer click */
+  background: transparent; /* 🎯 deja el fondo totalmente transparente */
+  color: #790707;             /* si querés el texto blanco */
+}
+
+/* main layout */
+.football-main {
+  display:flex;
+  gap: 20px;
+  flex-direction: column;
+}
+
+/* calendar area */
+.football-calendar {
+  background: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(3,3,3,0.9));
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid rgba(0,160,255,0.12);
+  box-shadow: 0 4px 20px rgba(0,160,255,0.06);
+}
+
+/* aside */
+.football-aside {
+  margin-top: 12px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(2,2,2,0.85));
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid rgba(0,160,255,0.08);
+}
+
+/* slots */
+.football-slot-list { display:flex; flex-direction:column; gap:6px; }
+.slot {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px;
+  border-radius:8px;
+  background:#0f1720;
+  border-left: 4px solid transparent;
+}
+.slot.free { border-left-color: #00c853; }
+.slot.occupied { border-left-color: #ff5252; opacity:0.85; }
+
+.slot button {
+  padding:6px 10px;
+  border-radius:8px;
+  background:#007bff;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+/* legend */
+.legend { display:flex; gap:10px; margin-top:8px; color:#ccc; font-size:14px; }
+.dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; }
+.dot.free { background:#00c853; }
+.dot.occupied { background:#ff5252; }
+
+/* modal */
+.modal-backdrop {
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.modal {
+  background:#07121a;
+  color:white;
+  padding:16px;
+  border-radius:10px;
+  width:320px;
+  border: 1px solid rgba(0,160,255,0.12);
+}
+.modal input { width:100%; padding:8px; margin-top:6px; border-radius:8px; border:1px solid #0b3b56; background:#07121a; color:white; }
+.modal-actions { display:flex; gap:8px; margin-top:12px; }
+.modal-actions button { flex:1; padding:8px; border-radius:8px; border:none; cursor:pointer; }
+.modal-actions button:first-child { background:#00b0ff; color:#001; }
+.modal-actions button:last-child { background:#252525; color:white; }
+
+/* responsive: tablets/desktop layout */
+@media(min-width: 900px) {
+  .football-main { flex-direction: row; }
+  .football-calendar { flex: 2; }
+  .football-aside { width: 320px; flex: 0 0 320px; }
+}
+
+/* FullCalendar event colors (override) */
+.fc .fc-event {
+  background: linear-gradient(90deg, #007bff, #00b0ff);
+  border: none;
+  color: #021;
+  font-weight: 700;
+}

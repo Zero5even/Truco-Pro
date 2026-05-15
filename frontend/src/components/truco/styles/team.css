@@ -1,0 +1,140 @@
+.team-panel {
+  background: rgba(26, 15, 6, 0.7);
+  border: 2px solid #c9a05b;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+  min-width: 300px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.team-panel h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: #f4d03f;
+  margin-top: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  font-size: 1.8rem;
+}
+
+.score-buttons {
+  margin-top: 25px;
+}
+
+.classic-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn-sumar, .btn-restar {
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 0;
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  border: 2px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sumar {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+}
+
+.btn-restar {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: white;
+}
+
+.btn-sumar:hover:not(:disabled), .btn-restar:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+  filter: brightness(1.1);
+}
+
+.btn-sumar:active:not(:disabled), .btn-restar:active:not(:disabled) {
+  transform: translateY(0) scale(0.95);
+}
+
+.btn-sumar:disabled, .btn-restar:disabled {
+  background: #444;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dynamic-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #5d4037;
+}
+
+.dynamic-buttons button {
+  background: #3d2314;
+  color: #f4d03f;
+  border: 1px solid #c9a05b;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex: 1;
+  min-width: 90px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.dynamic-buttons button:hover:not(:disabled) {
+  background: #c9a05b;
+  color: #2c1a06;
+}
+
+.dynamic-buttons button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.dynamic-buttons button:disabled {
+  background: #2a2a2a;
+  color: #555;
+  cursor: not-allowed;
+  border-color: #444;
+}
+
+.falta-envido-btn {
+  background: #e67e22 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.falta-envido-btn:hover:not(:disabled) {
+  background: #d35400 !important;
+}
+
+.flor-btn {
+  background: #9b59b6 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.flor-btn:hover:not(:disabled) {
+  background: #8e44ad !important;
+}

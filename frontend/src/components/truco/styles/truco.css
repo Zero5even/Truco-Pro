@@ -1,0 +1,545 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #1a0f06;
+  color: #fff;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.fondo-madera {
+  background-image: url('../../../assets/fondo_madera.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+* {
+
+  box-sizing: border-box;
+}
+
+.truco-app {
+
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 20px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.truco-app h1 {
+  text-align: center;
+  color: #f4d03f;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.header-menu-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.menu-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #c9a05b;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  color: white;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(201, 160, 91, 0.5);
+}
+
+/* =========================
+   SIDE MENU DRAWER
+========================= */
+
+.side-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.side-menu-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.side-menu-drawer {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  max-width: 85vw;
+  height: 100vh;
+  background: rgba(26, 15, 6, 0.98);
+  border-left: 2px solid #c9a05b;
+  box-shadow: -5px 0 30px rgba(0,0,0,0.9);
+  z-index: 1001;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.side-menu-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 20px 20px;
+  border-bottom: 1px solid #5d4037;
+  margin-bottom: 15px;
+}
+
+.drawer-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.close-drawer {
+  background: transparent;
+  border: none;
+  color: #c9a05b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.close-drawer:hover {
+  color: #f4d03f;
+  transform: scale(1.1);
+}
+
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0 10px;
+  overflow-y: auto;
+}
+
+.drawer-content button {
+  background: transparent;
+  color: #fff;
+  border: none;
+  padding: 16px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.drawer-content button:hover {
+  background: rgba(201, 160, 91, 0.15);
+  color: #f4d03f;
+  padding-left: 25px;
+}
+
+.drawer-divider {
+  height: 1px;
+  background: #5d4037;
+  margin: 10px 15px;
+}
+
+.drawer-content button.danger {
+  color: #ff7675;
+}
+
+.drawer-content button.danger:hover {
+  background: rgba(231, 76, 60, 0.15);
+  color: #ff7675;
+}
+
+.preview-equipos {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px dashed #f4d03f;
+  margin-top: 15px;
+}
+
+.preview-equipos h3 {
+  color: #f4d03f;
+  margin-top: 0;
+}
+
+.teams-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.mode-selector {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  flex-wrap: nowrap;
+
+ 
+}
+
+.mode-selector button {
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 12px 24px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  min-width: 120px;
+}
+
+.active-mode {
+
+  background: gold;
+}
+
+.top-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  margin-bottom: 20px;
+}
+
+.undo-btn {
+  border: 1px solid #c9a05b;
+  border-radius: 8px;
+  padding: 8px 24px;
+  cursor: pointer;
+  font-weight: bold;
+  background: rgba(0,0,0,0.5);
+  color: #f4d03f;
+  transition: all 0.2s;
+}
+
+.undo-btn:hover {
+  background: rgba(244, 208, 63, 0.2);
+}
+
+.dynamic-global-controls {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.dynamic-team-panel {
+  flex: 1;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dynamic-team-panel h4 {
+  color: #f4d03f;
+  margin-top: 0;
+  text-align: center;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.dyn-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+.dyn-btn-group button {
+  background: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #2c3e50;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex: 1;
+  min-width: 80px;
+}
+
+.dyn-btn-group button:hover {
+  background: #415b76;
+}
+
+.dyn-btn-group .falta-envido-btn {
+  background: #e67e22 !important;
+}
+
+.dyn-btn-group .flor-btn {
+  background: #9b59b6 !important;
+}
+
+.shuffle-banner {
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffcc00,
+      #ff8800
+    );
+
+  color: black;
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  font-size:
+    clamp(1.3rem, 5vw, 2rem);
+
+  font-weight: bold;
+
+  margin-bottom: 20px;
+
+  animation:
+    pulse 0.8s infinite;
+}
+
+.winner-banner {
+
+  background: gold;
+
+  color: black;
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  font-size:
+    clamp(1.3rem, 5vw, 2rem);
+
+  font-weight: bold;
+
+  margin-bottom: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  align-items: center;
+}
+
+.new-game-btn {
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 14px 24px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+/* =========================
+   PLAYERS POPUP
+========================= */
+
+.players-toggle {
+  border: 1px solid #c9a05b;
+  border-radius: 12px;
+  padding: 14px 28px;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(180deg, #3d2314 0%, #2c1a06 100%);
+  color: #f4d03f;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.players-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201, 160, 91, 0.3);
+  border-color: #f4d03f;
+  filter: brightness(1.1);
+}
+
+.players-toggle:active {
+  transform: translateY(0);
+}
+
+.players-modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,0.65);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 999;
+}
+
+.players-modal {
+
+  position: relative;
+
+  width: 95%;
+
+  max-width: 850px;
+}
+
+.close-modal {
+
+  position: absolute;
+
+  top: 10px;
+
+  right: 10px;
+
+  width: 38px;
+
+  height: 38px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  background: white;
+
+  z-index: 5;
+}
+
+@media (max-width: 600px) {
+
+  .players-modal {
+
+    width: 100%;
+
+    padding: 10px;
+  }
+}
+@keyframes pulse {
+
+  0% {
+
+    transform: scale(1);
+  }
+
+  50% {
+
+    transform: scale(1.04);
+  }
+
+  100% {
+
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  /* teams-container ya no usa grid */
+}
+@media (max-width: 600px) {
+
+  .truco-app {
+
+    padding: 14px;
+  }
+
+  .mode-selector {
+
+    display: flex;
+
+
+    flex-direction: row;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+    gap: 20px;
+  }
+
+  .mode-selector button {
+
+    flex: 1;
+
+    max-width: 140px;
+  }
+
+  .undo-btn,
+  .new-game-btn {
+
+    width: 100%;
+  }
+}

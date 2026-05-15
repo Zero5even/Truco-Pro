@@ -1,0 +1,108 @@
+.marcador-container {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  width: 100%;
+
+  padding: 10px;
+
+  box-sizing: border-box;
+}
+
+.group {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  margin: 15px 0;
+}
+
+.square {
+
+  position: relative;
+
+  width: 44px;
+
+  height: 44px;
+
+  flex-shrink: 0;
+}
+
+.line {
+
+  position: absolute;
+
+  background: white;
+}
+
+.left {
+
+  width: 4px;
+
+  height: 100%;
+
+  left: 0;
+}
+
+.top {
+
+  width: 100%;
+
+  height: 4px;
+
+  top: 0;
+}
+
+.right {
+
+  width: 4px;
+
+  height: 100%;
+
+  right: 0;
+}
+
+.bottom {
+
+  width: 100%;
+
+  height: 4px;
+
+  bottom: 0;
+}
+
+.diagonal {
+
+  position: absolute;
+
+  width: 4px;
+
+  height: 140%;
+
+  left: 50%;
+
+  top: -20%;
+
+  transform: rotate(45deg);
+
+  background: white;
+}
+
+@media (max-width: 600px) {
+
+  .square {
+
+    width: 36px;
+
+    height: 36px;
+  }
+}

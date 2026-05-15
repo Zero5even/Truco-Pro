@@ -1,0 +1,134 @@
+.anotador-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.anotador-tabla {
+  flex: 1;
+  background: rgba(26, 15, 6, 0.4);
+  border: 2px solid #c9a05b;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.anotador-header {
+  display: flex;
+  border-bottom: 2px solid #c9a05b;
+  background: rgba(201, 160, 91, 0.1);
+}
+
+.header-celda {
+  flex: 1;
+  padding: 15px 10px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #f4d03f;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.header-celda:first-child {
+  border-right: 2px solid #c9a05b;
+}
+
+.anotador-cuerpo {
+  display: flex;
+  min-height: 400px;
+  position: relative;
+}
+
+.mitad-anotador {
+  flex: 1;
+  cursor: pointer;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.mitad-anotador:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.linea-vertical {
+  width: 2px;
+  background: #c9a05b;
+  height: 100%;
+}
+
+.fosforos-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.grupo-malas, .grupo-buenas {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.separador-buenas-malas {
+  height: 2px;
+  width: 100%;
+  border-bottom: 1px dashed #5d4037;
+  margin: 5px 0;
+}
+
+.controles-laterales {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.btn-circulo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #c9a05b;
+  background: rgba(26, 15, 6, 0.8);
+  color: #f4d03f;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn-circulo:hover:not(:disabled) {
+  transform: scale(1.1);
+  background: #c9a05b;
+  color: #2c1a06;
+}
+
+.btn-circulo:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-minus {
+  font-size: 1.8rem;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 600px) {
+  .anotador-wrapper {
+    gap: 10px;
+  }
+  .btn-circulo {
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
+  }
+}

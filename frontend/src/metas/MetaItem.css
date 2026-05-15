@@ -1,0 +1,66 @@
+.meta-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border-top: 5px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.meta-card:hover { transform: translateY(-5px); }
+
+/* Color de borde según prioridad */
+.meta-card h3 { margin: 0 0 10px 0; color: var(--text-main); }
+
+.meta-prioridad {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  background: #eff6ff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--primary);
+}
+
+.meta-estado {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.meta-estado button {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  filter: grayscale(1);
+  transition: all 0.2s;
+}
+
+.meta-estado button.active {
+  filter: grayscale(0);
+  background: #f8fafc;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.meta-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.meta-actions button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.meta-actions button:hover { color: var(--primary); }
