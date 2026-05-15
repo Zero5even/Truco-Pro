@@ -24,7 +24,7 @@ export default function PlayerManager({
       const res = await obtenerJugadores();
       setDbPlayers(res.data);
     } catch (error) {
-      console.error("Error cargando jugadores", error);
+      console.error("Error detallado cargando jugadores:", error.response || error);
     }
   };
 
