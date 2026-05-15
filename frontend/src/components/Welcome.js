@@ -5,37 +5,35 @@ import './Welcome.css';
 const Welcome = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [motivationalMessage, setMotivationalMessage] = useState('');
-  const [serverReady, setServerReady] = useState(false);
-
-  const motivationalMessages = [
-    "Preparando todo para tu mejor experiencia...",
-    "Grandes cosas empiezan con pequeños momentos como este...",
-    "Tu tiempo es valioso, gracias por esperar...",
-    "Mientras cargamos, recuerda: hoy es un gran día...",
-    "Preparando la parrilla para tus mejores momentos...",
-    "Cada momento de espera acerca a un momento de disfrute..."
-  ];
-
-  const getRandomMessage = () => {
-    const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-    return motivationalMessages[randomIndex];
-  };
-
-  const checkServerStatus = async () => {
-    try {
-      const isReady = Math.random() > 0.5;
-      if (isReady) {
-        setServerReady(true);
-        setIsLoading(false);
-      }
-      return isReady;
-    } catch (error) {
-      console.error("Error checking server status:", error);
-      return false;
-    }
-  };
 
   useEffect(() => {
+    const motivationalMessages = [
+      "Preparando todo para tu mejor experiencia...",
+      "Grandes cosas empiezan con pequeños momentos como este...",
+      "Tu tiempo es valioso, gracias por esperar...",
+      "Mientras cargamos, recuerda: hoy es un gran día...",
+      "Preparando la parrilla para tus mejores momentos...",
+      "Cada momento de espera acerca a un momento de disfrute..."
+    ];
+
+    const getRandomMessage = () => {
+      const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
+      return motivationalMessages[randomIndex];
+    };
+
+    const checkServerStatus = async () => {
+      try {
+        const isReady = Math.random() > 0.5;
+        if (isReady) {
+          setIsLoading(false);
+        }
+        return isReady;
+      } catch (error) {
+        console.error("Error checking server status:", error);
+        return false;
+      }
+    };
+
     setMotivationalMessage(getRandomMessage());
 
     let messageInterval;

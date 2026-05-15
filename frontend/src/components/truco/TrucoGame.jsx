@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import PlayerManager from "./components/PlayerManager";
-import Ranking from "./components/Ranking";
 import GameConfig from "./components/GameConfig";
 import SorteoReyes from "./components/SorteoReyes";
 import AnotadorClasico from "./components/AnotadorClasico";
@@ -72,7 +71,7 @@ export default function TrucoGame() {
       }
     };
     guardar();
-  }, [ganadorPartida]);
+  }, [ganadorPartida, equipoA, equipoB, puntosA, puntosB, modo, partidaGuardada]);
 
   const nombreGanador = ganadorPartida === "A"
     ? equipoA.join(" & ")
