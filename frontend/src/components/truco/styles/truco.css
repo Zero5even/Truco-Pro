@@ -55,19 +55,17 @@ body.fondo-madera {
 
 .header-menu-btn {
   position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 5px;
+  top: 10px; /* Bien arriba en la esquina */
   z-index: 10;
 }
 
 .menu-btn {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #c9a05b;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  font-size: 1.5rem;
+  background: rgba(26, 15, 6, 0.6);
+  border: 1px solid rgba(201, 160, 91, 0.4);
+  border-radius: 8px; /* Menos redondeado para estilo sobrio */
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -76,9 +74,30 @@ body.fondo-madera {
   color: white;
 }
 
+.hamburger-icon {
+  width: 22px;
+  height: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger-icon span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #f4d03f;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
 .menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 10px rgba(201, 160, 91, 0.5);
+  background: rgba(201, 160, 91, 0.1);
+  border-color: #f4d03f;
+}
+
+.menu-btn:hover .hamburger-icon span {
+  background-color: #fff;
 }
 
 /* =========================
@@ -255,6 +274,7 @@ body.fondo-madera {
   margin: 0 auto 20px auto;
   max-width: 650px;
   width: 100%;
+  padding: 0 70px; /* Compensa los botones laterales (50px) + gaps (20px) del anotador */
 }
 
 .undo-btn {
@@ -631,7 +651,9 @@ body.fondo-madera {
     max-width: 140px;
   }
 
-  .undo-btn,
+  .top-actions {
+    padding: 0 52px; /* 42px botones + 10px gap en móvil */
+  }
   .new-game-btn {
 
     width: 100%;

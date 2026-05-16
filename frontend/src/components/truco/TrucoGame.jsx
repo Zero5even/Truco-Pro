@@ -162,7 +162,13 @@ export default function TrucoGame() {
         
         {/* TOP MENU BOTON */}
         {gameStarted && (
-          <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)}>⚙️</button>
+          <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)}>
+            <div className="hamburger-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
         )}
       </div>
 
