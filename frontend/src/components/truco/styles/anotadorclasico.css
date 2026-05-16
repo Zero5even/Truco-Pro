@@ -39,18 +39,18 @@
 
 .anotador-cuerpo {
   display: flex;
-  min-height: 400px;
+  height: 540px; /* Altura fija para evitar que se mueva todo */
   position: relative;
 }
 
 .mitad-anotador {
   flex: 1;
   cursor: pointer;
-  padding: 20px 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   transition: background 0.2s;
+  position: relative;
+  z-index: 2; /* Por encima del separador */
 }
 
 .mitad-anotador:hover {
@@ -66,21 +66,34 @@
 .fosforos-columna {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
-.grupo-malas, .grupo-buenas {
+.area-puntos {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 15px;
+  padding: 10px;
 }
 
-.separador-buenas-malas {
-  height: 2px;
+.area-malas {
+  border-bottom: none;
+}
+
+.separador-fijo-horizontal {
+  position: absolute;
+  top: 50%;
+  left: 0;
   width: 100%;
-  border-bottom: 1px dashed #5d4037;
-  margin: 5px 0;
+  height: 2px;
+  border-bottom: 1px dashed rgba(201, 160, 91, 0.5);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .controles-laterales {
@@ -125,6 +138,9 @@
 @media (max-width: 600px) {
   .anotador-wrapper {
     gap: 10px;
+  }
+  .anotador-cuerpo {
+    height: 480px; /* Un poco más chico en móviles */
   }
   .btn-circulo {
     width: 42px;

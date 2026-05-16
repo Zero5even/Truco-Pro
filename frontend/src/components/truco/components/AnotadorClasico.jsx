@@ -33,16 +33,13 @@ export default function AnotadorClasico({
 
     return (
       <div className="fosforos-columna">
-        <div className="grupo-malas">
+        <div className="area-puntos area-malas">
           {renderGrupo(malas)}
         </div>
         {modo === 30 && (
-          <>
-            <div className="separador-buenas-malas"></div>
-            <div className="grupo-buenas">
-              {renderGrupo(buenas)}
-            </div>
-          </>
+          <div className="area-puntos area-buenas">
+            {renderGrupo(buenas)}
+          </div>
         )}
       </div>
     );
@@ -63,6 +60,7 @@ export default function AnotadorClasico({
         </div>
         
         <div className="anotador-cuerpo">
+          {modo === 30 && <div className="separador-fijo-horizontal"></div>}
           <div 
             className="mitad-anotador mitad-izquierda" 
             onClick={() => habilitado && sumarA(1)}
