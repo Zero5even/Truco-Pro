@@ -40,11 +40,13 @@ body.fondo-madera {
 }
 
 .app-logo {
-  max-width: 400px;
-  width: 90%;
+  max-width: 800px; /* Aumentado significativamente */
+  width: 85%; /* 85% del ancho de la pantalla */
   height: auto;
-  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 5px 20px rgba(0,0,0,0.6));
   z-index: 1;
+  display: block;
+  margin: 0 auto;
 }
 
 .truco-app h1 {
@@ -605,7 +607,8 @@ body.fondo-madera {
   }
 
   .app-logo {
-    max-width: 280px;
+    max-width: 500px; /* Más grande en móvil también */
+    width: 85%;
   }
 
   .mode-selector {
