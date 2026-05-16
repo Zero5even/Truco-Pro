@@ -5,6 +5,7 @@ import GameConfig from "./components/GameConfig";
 import SorteoReyes from "./components/SorteoReyes";
 import AnotadorClasico from "./components/AnotadorClasico";
 import { guardarPartida } from "./services/trucoApi";
+import logo from "../../assets/logo_falta_envido.png";
 
 import "./styles/truco.css";
 import "./styles/ranking.css";
@@ -28,6 +29,7 @@ export default function TrucoGame() {
   const [showPlayers, setShowPlayers] = useState(false);
   const [showSorteo, setShowSorteo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
 
   const limite = modo;
   const equiposListos = equipoA.length >= 1 && equipoB.length >= 1; // Para permitir mano a mano si se arma manual
@@ -46,8 +48,14 @@ export default function TrucoGame() {
      GANADOR
   ========================= */
   useEffect(() => {
-    if (puntosA >= limite && !ganadorPartida) setGanadorPartida("A");
-    if (puntosB >= limite && !ganadorPartida) setGanadorPartida("B");
+    if (puntosA >= limite && !ganadorPartida) {
+      setGanadorPartida("A");
+      setShowWinnerModal(true);
+    }
+    if (puntosB >= limite && !ganadorPartida) {
+      setGanadorPartida("B");
+      setShowWinnerModal(true);
+    }
   }, [puntosA, puntosB, limite, ganadorPartida]);
 
   /* =========================
@@ -137,6 +145,7 @@ export default function TrucoGame() {
     setPuntosB(0);
     setHistorial([]);
     setGanadorPartida(null);
+    setShowWinnerModal(false);
     setPartidaGuardada(false);
     if (fullReset) {
       setGameStarted(false);
@@ -149,7 +158,7 @@ export default function TrucoGame() {
   return (
     <div className="truco-app">
       <div className="header-container">
-        <h1>TRUCO PRO</h1>
+        <img src={logo} className="app-logo" alt="Falta Envido" />
         
         {/* TOP MENU BOTON */}
         {gameStarted && (
@@ -244,13 +253,25 @@ export default function TrucoGame() {
             </button>
           </div>
 
-          {nombreGanador && (
-            <div className="winner-banner">
-              <ConfettiExplosion force={0.8} duration={3000} particleCount={250} width={1600} />
-              🏆 ¡GANÓ {nombreGanador}! 🏆
-              <button className="new-game-btn" onClick={() => nuevaPartida(true)}>
-                Volver a Jugar
-              </button>
+          {showWinnerModal && (
+            <div className="winner-modal-overlay" onClick={() => setShowWinnerModal(false)}>
+              <div className="winner-modal-content" onClick={(e) => e.stopPropagation()}>
+                <ConfettiExplosion force={0.8} duration={3000} particleCount={250} width={1600} />
+                <div className="winner-trophy">🏆</div>
+                <h2 className="title-serif">¡Ganaron {nombreGanador}!</h2>
+                <p>¡Partida terminada!</p>
+                <div className="winner-actions-vertical">
+                  <button className="revancha-btn" onClick={() => nuevaPartida(false)}>
+                    🔄 Revancha
+                  </button>
+                  <button className="menu-principal-btn" onClick={() => nuevaPartida(true)}>
+                    🏠 Menú Principal
+                  </button>
+                  <button className="ver-puntos-btn" onClick={() => setShowWinnerModal(false)}>
+                    Ver Puntos
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 

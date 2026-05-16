@@ -35,18 +35,20 @@ body.fondo-madera {
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  min-height: 120px;
+}
+
+.app-logo {
+  max-width: 400px;
+  width: 90%;
+  height: auto;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+  z-index: 1;
 }
 
 .truco-app h1 {
-  text-align: center;
-  color: #f4d03f;
-  font-family: 'Playfair Display', serif;
-  font-weight: 900;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-  font-size: clamp(2.5rem, 8vw, 4.5rem);
-  margin: 0;
-  letter-spacing: -1px;
+  display: none; /* Ya no usamos el texto */
 }
 
 .header-menu-btn {
@@ -246,23 +248,25 @@ body.fondo-madera {
 }
 
 .top-actions {
-
   display: flex;
-
   justify-content: center;
-
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+  max-width: 650px;
+  width: 100%;
 }
 
 .undo-btn {
   border: 1px solid #c9a05b;
   border-radius: 8px;
-  padding: 8px 24px;
+  padding: 12px 24px;
   cursor: pointer;
-  font-weight: bold;
-  background: rgba(0,0,0,0.5);
+  font-weight: 700;
+  background: rgba(26, 15, 6, 0.6);
   color: #f4d03f;
   transition: all 0.2s;
+  width: 100%; /* Toma todo el ancho del contenedor */
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .undo-btn:hover {
@@ -351,45 +355,124 @@ body.fondo-madera {
     pulse 0.8s infinite;
 }
 
-.winner-banner {
+/* =========================
+   WINNER MODAL
+========================= */
 
-  background: gold;
-
-  color: black;
-
-  padding: 20px;
-
-  border-radius: 20px;
-
-  text-align: center;
-
-  font-size:
-    clamp(1.3rem, 5vw, 2rem);
-
-  font-weight: bold;
-
-  margin-bottom: 20px;
-
+.winner-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
-
-  flex-direction: column;
-
-  gap: 20px;
-
+  justify-content: center;
   align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.4s ease;
+  cursor: pointer;
 }
 
-.new-game-btn {
+.winner-modal-content {
+  background: linear-gradient(135deg, #2c1a06 0%, #1a0f06 100%);
+  border: 3px solid #c9a05b;
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  max-width: 90%;
+  width: 500px;
+  box-shadow: 0 0 50px rgba(201, 160, 91, 0.4);
+  animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: default;
+}
 
+.winner-trophy {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 10px gold);
+}
+
+.winner-modal-content h2 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  color: #f4d03f;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.winner-modal-content p {
+  color: #c9a05b;
+  font-style: italic;
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+}
+
+.winner-actions-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.revancha-btn {
+  background: linear-gradient(135deg, #f1c40f, #f39c12);
+  color: #2c1a06;
   border: none;
-
-  border-radius: 14px;
-
-  padding: 14px 24px;
-
+  border-radius: 12px;
+  padding: 18px;
+  font-weight: 800;
+  font-size: 1.2rem;
   cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
 
-  font-weight: bold;
+.menu-principal-btn {
+  background: rgba(201, 160, 91, 0.15);
+  color: #f4d03f;
+  border: 1px solid #c9a05b;
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ver-puntos-btn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.revancha-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.5);
+}
+
+.menu-principal-btn:hover {
+  background: rgba(201, 160, 91, 0.25);
+}
+
+.ver-puntos-btn:hover {
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* =========================
@@ -513,8 +596,16 @@ body.fondo-madera {
 @media (max-width: 600px) {
 
   .truco-app {
+    padding: 10px;
+  }
 
-    padding: 14px;
+  .header-container {
+    min-height: 100px;
+    margin-bottom: 10px;
+  }
+
+  .app-logo {
+    max-width: 280px;
   }
 
   .mode-selector {
