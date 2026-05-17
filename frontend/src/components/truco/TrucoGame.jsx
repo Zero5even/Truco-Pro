@@ -197,7 +197,10 @@ export default function TrucoGame() {
           <button className="close-drawer" onClick={() => setShowMenu(false)}>✕</button>
         </div>
         <div className="drawer-content">
-          <button className="ranking-menu-btn" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>
+          <button className="home-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/"); }}>
+            🏠 Inicio / Home
+          </button>
+          <button className="ranking-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>
             🏆 Rankings e Historial
           </button>
           <div className="drawer-divider"></div>
@@ -208,7 +211,7 @@ export default function TrucoGame() {
             {florEnabled ? "Quitar Flor" : "Habilitar Flor"}
           </button>
           <div className="drawer-divider"></div>
-          <button className="danger" onClick={() => nuevaPartida(true)}>
+          <button className="danger font-weight-bold" onClick={() => nuevaPartida(true)}>
             Reiniciar Partida
           </button>
         </div>
