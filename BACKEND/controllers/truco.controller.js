@@ -117,81 +117,66 @@ export const obtenerStats =
 
 /* RANKING */
 
-export const obtenerRanking =
-  async (req, res) => {
+export const obtenerRanking = async (req, res) => {
+  try {
+    const partidas = await TrucoPartida.find();
+    const jugadoresDB = await TrucoPlayer.find();
 
-    try {
+    const rankingJugadores = {};
 
-      const partidas =
-        await TrucoPartida.find();
+    jugadoresDB.forEach(jug => {
+      rankingJugadores[jug.nombre] = {
+        nombre: jug.nombre,
+        partidasJugadas: 0,
+        victorias: 0,
+        winrate: 0
+      };
+    });
 
-      const rankingJugadores = {};
+    partidas.forEach(partida => {
+      const ganadores = partida.ganador === "A" ? partida.equipoA : partida.equipoB;
+      const perdedores = partida.ganador === "A" ? partida.equipoB : partida.equipoA;
 
-      const rankingParejas = {};
-
-      partidas.forEach(partida => {
-
-        const ganadores =
-          partida.ganador === "A"
-            ? partida.equipoA
-            : partida.equipoB;
-
-        /* JUGADORES */
-
-        ganadores.forEach(jugador => {
-
-          if (!rankingJugadores[jugador]) {
-
-            rankingJugadores[jugador] = 0;
-          }
-
-          rankingJugadores[jugador]++;
-        });
-
-        /* PAREJAS */
-
-        const pareja =
-          [...ganadores]
-            .sort()
-            .join(" & ");
-
-        if (!rankingParejas[pareja]) {
-
-          rankingParejas[pareja] = 0;
+      ganadores.forEach(jugador => {
+        if (!rankingJugadores[jugador]) {
+          rankingJugadores[jugador] = { nombre: jugador, partidasJugadas: 0, victorias: 0, winrate: 0 };
         }
-
-        rankingParejas[pareja]++;
+        rankingJugadores[jugador].partidasJugadas++;
+        rankingJugadores[jugador].victorias++;
       });
 
-      const jugadoresOrdenados =
-        Object.entries(
-          rankingJugadores
-        )
-        .sort((a, b) => b[1] - a[1]);
-
-      const parejasOrdenadas =
-        Object.entries(
-          rankingParejas
-        )
-        .sort((a, b) => b[1] - a[1]);
-
-      res.json({
-
-        jugadores:
-          jugadoresOrdenados,
-
-        parejas:
-          parejasOrdenadas
+      perdedores.forEach(jugador => {
+        if (!rankingJugadores[jugador]) {
+          rankingJugadores[jugador] = { nombre: jugador, partidasJugadas: 0, victorias: 0, winrate: 0 };
+        }
+        rankingJugadores[jugador].partidasJugadas++;
       });
+    });
 
-    } catch (error) {
+    Object.values(rankingJugadores).forEach(jug => {
+      if (jug.partidasJugadas > 0) {
+        jug.winrate = Math.round((jug.victorias / jug.partidasJugadas) * 100);
+      } else {
+        jug.winrate = 0;
+      }
+    });
 
-      res.status(500).json({
-        error:
-          "Error ranking"
-      });
-    }
-  };
+    const jugadoresOrdenados = Object.values(rankingJugadores).sort((a, b) => {
+      if (b.winrate !== a.winrate) {
+        return b.winrate - a.winrate;
+      }
+      return b.partidasJugadas - a.partidasJugadas;
+    });
+
+    res.json({
+      jugadores: jugadoresOrdenados
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error calculando ranking" });
+  }
+};
 
 /* JUGADORES */
 

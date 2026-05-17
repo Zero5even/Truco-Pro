@@ -33,6 +33,21 @@ const TrucoPartidaSchema =
       type: String,
       enum: ["A", "B"],
       required: true
+    },
+
+    modalidad: {
+      type: String,
+      default: "Parejas"
+    },
+
+    conFlor: {
+      type: Boolean,
+      default: false
+    },
+
+    diferenciaPuntos: {
+      type: Number,
+      default: 0
     }
 
   }, {

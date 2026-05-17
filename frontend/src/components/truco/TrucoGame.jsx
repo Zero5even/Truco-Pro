@@ -4,6 +4,7 @@ import PlayerManager from "./components/PlayerManager";
 import GameConfig from "./components/GameConfig";
 import SorteoReyes from "./components/SorteoReyes";
 import AnotadorClasico from "./components/AnotadorClasico";
+import Ranking from "./components/Ranking";
 import { guardarPartida } from "./services/trucoApi";
 import logo from "../../assets/logo_falta_envido.png";
 
@@ -30,6 +31,7 @@ export default function TrucoGame() {
   const [showSorteo, setShowSorteo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [showRankingModal, setShowRankingModal] = useState(false);
 
   const limite = modo;
   const equiposListos = equipoA.length >= 1 && equipoB.length >= 1; // Para permitir mano a mano si se arma manual
@@ -65,13 +67,27 @@ export default function TrucoGame() {
     const guardar = async () => {
       if (!ganadorPartida || partidaGuardada) return;
       try {
+        let modalidadCalculada = "Parejas";
+        if (equipoA.length === 1 && equipoB.length === 1) {
+          modalidadCalculada = "Mano a mano";
+        } else if (equipoA.length === 2 && equipoB.length === 2) {
+          modalidadCalculada = "Parejas";
+        } else if (equipoA.length >= 3 && equipoB.length >= 3) {
+          modalidadCalculada = "Pica pica";
+        } else {
+          modalidadCalculada = `${equipoA.length}v${equipoB.length}`;
+        }
+
         await guardarPartida({
           equipoA,
           equipoB,
           puntosA,
           puntosB,
           modo,
-          ganador: ganadorPartida
+          ganador: ganadorPartida,
+          modalidad: modalidadCalculada,
+          conFlor: florEnabled,
+          diferenciaPuntos: Math.abs(puntosA - puntosB)
         });
         setPartidaGuardada(true);
       } catch (error) {
@@ -79,7 +95,7 @@ export default function TrucoGame() {
       }
     };
     guardar();
-  }, [ganadorPartida, equipoA, equipoB, puntosA, puntosB, modo, partidaGuardada]);
+  }, [ganadorPartida, equipoA, equipoB, puntosA, puntosB, modo, partidaGuardada, florEnabled]);
 
   const nombreGanador = ganadorPartida === "A"
     ? equipoA.join(" & ")
@@ -161,15 +177,13 @@ export default function TrucoGame() {
         <img src={logo} className="app-logo" alt="Falta Envido" />
         
         {/* TOP MENU BOTON */}
-        {gameStarted && (
-          <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)}>
-            <div className="hamburger-icon">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
-        )}
+        <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)}>
+          <div className="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
       </div>
 
       {/* SIDE MENU DRAWER */}
@@ -183,6 +197,10 @@ export default function TrucoGame() {
           <button className="close-drawer" onClick={() => setShowMenu(false)}>✕</button>
         </div>
         <div className="drawer-content">
+          <button className="ranking-menu-btn" onClick={() => { setShowRankingModal(true); setShowMenu(false); }}>
+            🏆 Rankings e Historial
+          </button>
+          <div className="drawer-divider"></div>
           <button onClick={() => { setInputMethod(inputMethod === "classic" ? "dynamic" : "classic"); setShowMenu(false); }}>
             Cambiar a {inputMethod === "classic" ? "Dinámico" : "Clásico"}
           </button>
@@ -197,6 +215,20 @@ export default function TrucoGame() {
       </div>
 
       {/* MODALES */}
+      {showRankingModal && (
+        <div className="full-screen-modal-overlay">
+          <div className="full-screen-modal">
+            <div className="full-screen-header">
+              <h2 className="title-serif">Rankings e Historial</h2>
+              <button className="close-full-modal" onClick={() => setShowRankingModal(false)}>✕</button>
+            </div>
+            <div className="full-screen-body">
+              <Ranking />
+            </div>
+          </div>
+        </div>
+      )}
+
       {showPlayers && (
         <div className="players-modal-overlay">
           <div className="players-modal">
