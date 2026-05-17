@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ConfettiExplosion from "react-confetti-explosion";
 import PlayerManager from "./components/PlayerManager";
 import GameConfig from "./components/GameConfig";
 import SorteoReyes from "./components/SorteoReyes";
 import AnotadorClasico from "./components/AnotadorClasico";
-import Ranking from "./components/Ranking";
 import { guardarPartida } from "./services/trucoApi";
 import logo from "../../assets/logo_falta_envido.png";
 
@@ -12,6 +12,7 @@ import "./styles/truco.css";
 import "./styles/ranking.css";
 
 export default function TrucoGame() {
+  const navigate = useNavigate();
   const [modo, setModo] = useState(30);
   const [florEnabled, setFlorEnabled] = useState(false);
   const [inputMethod, setInputMethod] = useState("classic");
@@ -31,7 +32,6 @@ export default function TrucoGame() {
   const [showSorteo, setShowSorteo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
-  const [showRankingModal, setShowRankingModal] = useState(false);
 
   const limite = modo;
   const equiposListos = equipoA.length >= 1 && equipoB.length >= 1; // Para permitir mano a mano si se arma manual
@@ -177,7 +177,7 @@ export default function TrucoGame() {
         <img src={logo} className="app-logo" alt="Falta Envido" />
         
         {/* TOP MENU BOTON */}
-        <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)}>
+        <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)} title="Menú de Ajustes">
           <div className="hamburger-icon">
             <span></span>
             <span></span>
@@ -197,7 +197,7 @@ export default function TrucoGame() {
           <button className="close-drawer" onClick={() => setShowMenu(false)}>✕</button>
         </div>
         <div className="drawer-content">
-          <button className="ranking-menu-btn" onClick={() => { setShowRankingModal(true); setShowMenu(false); }}>
+          <button className="ranking-menu-btn" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>
             🏆 Rankings e Historial
           </button>
           <div className="drawer-divider"></div>
@@ -215,19 +215,6 @@ export default function TrucoGame() {
       </div>
 
       {/* MODALES */}
-      {showRankingModal && (
-        <div className="full-screen-modal-overlay">
-          <div className="full-screen-modal">
-            <div className="full-screen-header">
-              <h2 className="title-serif">Rankings e Historial</h2>
-              <button className="close-full-modal" onClick={() => setShowRankingModal(false)}>✕</button>
-            </div>
-            <div className="full-screen-body">
-              <Ranking />
-            </div>
-          </div>
-        </div>
-      )}
 
       {showPlayers && (
         <div className="players-modal-overlay">

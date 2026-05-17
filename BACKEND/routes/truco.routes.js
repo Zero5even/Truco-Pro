@@ -8,7 +8,8 @@ import {
   obtenerRanking,
   obtenerJugadores,
   crearJugador,
-  eliminarJugador
+  eliminarJugador,
+  limpiarHistorial
 } from "../controllers/truco.controller.js";
 
 const router = express.Router();
@@ -31,6 +32,8 @@ router.get("/stats", obtenerStats);
 router.get("/ranking", obtenerRanking);
 
 /* DELETE */
+router.delete("/limpiar-todo", limpiarHistorial);
 router.delete("/:id", eliminarPartida);
+
 
 export default router;

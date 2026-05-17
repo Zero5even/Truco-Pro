@@ -78,6 +78,16 @@ export const eliminarPartida =
     }
   };
 
+export const limpiarHistorial = async (req, res) => {
+  try {
+    await TrucoPartida.deleteMany({});
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: "Error limpiando historial" });
+  }
+};
+
+
 /* STATS */
 
 export const obtenerStats =

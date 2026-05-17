@@ -1,101 +1,191 @@
-// Ranking.jsx – actualizado para winrate y historial
 import { useEffect, useState } from "react";
-import { obtenerRanking, obtenerHistorial, borrarPartida } from "../services/trucoApi";
+import { useNavigate } from "react-router-dom";
+import { obtenerRanking, obtenerHistorial, borrarPartida, limpiarTodoHistorial } from "../services/trucoApi";
+import logo from "../../../assets/logo_falta_envido.png";
+import "../styles/truco.css";
 import "../styles/ranking.css";
 
 export default function Ranking() {
-  // Rankings de jugadores
+  const navigate = useNavigate();
   const [ranking, setRanking] = useState(null);
-  const [expandJugadores, setExpandJugadores] = useState(false);
-
-  // Historial de partidas
   const [historial, setHistorial] = useState([]);
-  const [expandHistorial, setExpandHistorial] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Cargar datos al montar
   useEffect(() => {
-    cargarRanking();
-    cargarHistorial();
+    document.body.classList.add("fondo-madera");
+    cargarDatos();
+    return () => document.body.classList.remove("fondo-madera");
   }, []);
 
-  const cargarRanking = async () => {
+  const cargarDatos = async () => {
+    setLoading(true);
     try {
-      const res = await obtenerRanking();
-      setRanking(res.data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const cargarHistorial = async () => {
-    try {
-      const res = await obtenerHistorial();
-      const ordenado = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const resRanking = await obtenerRanking();
+      const resHistorial = await obtenerHistorial();
+      setRanking(resRanking.data);
+      const ordenado = resHistorial.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setHistorial(ordenado);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleBorrar = async (id) => {
-    if (!window.confirm("¿Eliminar esta partida? Esta acción no se puede deshacer.")) return;
+  const handleBorrarPartida = async (id) => {
+    if (!window.confirm("⚠️ ¿Estás seguro de eliminar este partido? Los rankings se recalcularán.")) return;
     try {
       await borrarPartida(id);
-      cargarRanking();
-      cargarHistorial();
+      cargarDatos();
     } catch (e) {
       console.error(e);
     }
   };
 
-  if (!ranking) {
-    return (
-      <div className="ranking-panel">Cargando ranking...</div>
-    );
-  }
+  const handleLimpiarTodo = async () => {
+    if (!window.confirm("🚨 ¡ATENCIÓN! ¿Estás seguro de que deseas eliminar TODO el historial de partidas? Todos los jugadores volverán a tener 0 partidos jugados y 0% de winrate. Esta acción no se puede deshacer.")) return;
+    try {
+      await limpiarTodoHistorial();
+      cargarDatos();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  const jugadoresMostrar = expandJugadores ? ranking.jugadores : ranking.jugadores.slice(0, 5);
-  const historialMostrar = expandHistorial ? historial : historial.slice(0, 5);
+  const formatearFecha = (isoString) => {
+    const fecha = new Date(isoString);
+    return fecha.toLocaleDateString() + " " + fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
-    <div className="ranking-wrapper">
-      {/* Jugadores */}
-      <div className="ranking-panel">
-        <h2>🏆 Jugadores</h2>
-        {jugadoresMostrar.map((jug, i) => (
-          <div key={i} className="ranking-item">
-            <span className="ranking-name">#{i + 1} {jug.nombre}</span>
-            <span className="ranking-stats">
-              {jug.winrate}% winrate • {jug.partidasJugadas} PJ
-            </span>
-          </div>
-        ))}
-        {ranking.jugadores.length > 5 && (
-          <button className="ranking-expand" onClick={() => setExpandJugadores(!expandJugadores)}>
-            {expandJugadores ? "Ver menos ▲" : "Ver más ▼"}
-          </button>
-        )}
+    <div className="truco-app rankings-page-container">
+      <div className="header-container rankings-header">
+        <button className="back-btn" onClick={() => navigate("/truco")}>
+          ⬅️ Volver
+        </button>
+        <img src={logo} className="app-logo-small" alt="Falta Envido" />
+        <button className="clean-all-btn" onClick={handleLimpiarTodo} title="Reiniciar Historial de Partidas">
+          🧹 Limpiar Todo
+        </button>
       </div>
 
-      {/* Historial */}
-      <div className="ranking-panel">
-        <h2>📜 Historial de Partidas</h2>
-        {historialMostrar.map((part, i) => (
-          <div key={i} className="ranking-item">
-            <span className="ranking-name">
-              {new Date(part.createdAt).toLocaleDateString()} – {part.modalidad || "Desconocida"} – {part.modo} pts
-              {part.conFlor && " – 🌸 Flor"}
-            </span>
-            <span className="ranking-stats">
-              {part.equipoA.join(" & ")} ({part.puntosA}) vs {part.equipoB.join(" & ")} ({part.puntosB})
-            </span>
-            <button className="danger" onClick={() => handleBorrar(part._id)} title="Eliminar partida">🗑️</button>
+      <div className="rankings-content">
+        <h1 className="title-serif text-center mb-4 text-glow" style={{ color: "#ffdd57" }}>Estadísticas e Historial</h1>
+        
+        {loading ? (
+          <div className="loading-box">Cargando estadísticas...</div>
+        ) : (
+          <div className="rankings-layout-vertical">
+            
+            {/* PANEL RANKING JUGADORES */}
+            <div className="ranking-panel">
+              <div className="panel-header-flex">
+                <h2>🏆 Ranking por Winrate</h2>
+                <span className="badge-count">{ranking?.jugadores?.length || 0} Jugadores</span>
+              </div>
+              
+              <div className="table-responsive">
+                <table className="premium-table">
+                  <thead>
+                    <tr>
+                      <th>Pos</th>
+                      <th>Jugador</th>
+                      <th>Winrate</th>
+                      <th>PJ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(!ranking?.jugadores || ranking.jugadores.length === 0) ? (
+                      <tr>
+                        <td colSpan="4" className="text-center empty-msg">No hay jugadores registrados.</td>
+                      </tr>
+                    ) : (
+                      ranking.jugadores.map((jug, i) => {
+                        let badgeClass = "badge-silver";
+                        if (i === 0 && jug.partidasJugadas > 0) badgeClass = "badge-gold";
+                        if (i === 1 && jug.partidasJugadas > 0) badgeClass = "badge-silver";
+                        if (i === 2 && jug.partidasJugadas > 0) badgeClass = "badge-bronze";
+                        
+                        return (
+                          <tr key={jug.nombre} className={i < 3 && jug.partidasJugadas > 0 ? "top-row" : ""}>
+                            <td className="pos-cell font-weight-bold">#{i + 1}</td>
+                            <td className="name-cell font-weight-bold">{jug.nombre}</td>
+                            <td className="winrate-cell">
+                              <span className={`winrate-badge ${badgeClass}`}>
+                                {jug.partidasJugadas > 0 ? `${jug.winrate}%` : "-"}
+                              </span>
+                            </td>
+                            <td className="pj-cell">{jug.partidasJugadas}</td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* PANEL HISTORIAL DE PARTIDAS */}
+            <div className="ranking-panel">
+              <div className="panel-header-flex">
+                <h2>📜 Historial de Partidas</h2>
+                <span className="badge-count">{historial.length} Partidos</span>
+              </div>
+
+              <div className="historial-list-compact">
+                {historial.length === 0 ? (
+                  <p className="text-center empty-msg">No hay partidos jugados aún. ¡Anoten el primero!</p>
+                ) : (
+                  historial.map((part) => {
+                    const ganoA = part.ganador === "A";
+                    return (
+                      <div key={part._id} className="historial-item-compact">
+                        <div className="hist-meta-col">
+                          <div className="hist-modalidad">
+                            🎲 <strong style={{ color: "#ffdd57" }}>{part.modalidad || "Parejas"}</strong>
+                            <span className="hist-badge-pts">a {part.modo} pts</span>
+                            <span className={`hist-badge-flor ${part.conFlor ? "flor-yes" : "flor-no"}`}>
+                              {part.conFlor ? "🌸 Flor" : "❌ Sin Flor"}
+                            </span>
+                          </div>
+                          <div className="hist-submeta">
+                            📅 {formatearFecha(part.createdAt)}
+                          </div>
+                        </div>
+
+                        <div className="hist-match-col">
+                          <div className={`hist-team ${ganoA ? 'hist-winner' : 'hist-loser'}`}>
+                            <span className="hist-team-name">{part.equipoA.join(" & ")}</span>
+                            <span className="hist-team-score font-weight-bold">{part.puntosA}</span>
+                            {ganoA && <span className="hist-crown" title="Ganador">👑</span>}
+                          </div>
+
+                          <span className="hist-vs font-italic">vs</span>
+
+                          <div className={`hist-team ${!ganoA ? 'hist-winner' : 'hist-loser'}`}>
+                            <span className="hist-team-name">{part.equipoB.join(" & ")}</span>
+                            <span className="hist-team-score font-weight-bold">{part.puntosB}</span>
+                            {!ganoA && <span className="hist-crown" title="Ganador">👑</span>}
+                          </div>
+                        </div>
+
+                        <div className="hist-actions-col">
+                          <button 
+                            className="btn-trash-compact" 
+                            onClick={() => handleBorrarPartida(part._id)}
+                            title="Eliminar este partido"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
           </div>
-        ))}
-        {historial.length > 5 && (
-          <button className="ranking-expand" onClick={() => setExpandHistorial(!expandHistorial)}>
-            {expandHistorial ? "Ver menos ▲" : "Ver más ▼"}
-          </button>
         )}
       </div>
     </div>

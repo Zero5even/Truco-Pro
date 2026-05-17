@@ -10,6 +10,7 @@ import Register from './auth/Register';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Dashboard from './metas/Dashboard';
 import TrucoGame from "./components/truco/TrucoGame";
+import Ranking from "./components/truco/components/Ranking";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         {/* truco */}
         <Route path="/truco" element={<TrucoGame />} />
+        <Route path="/truco/rankings" element={<Ranking />} />
 
 
         {/* METAS (PROTEGIDO) */}

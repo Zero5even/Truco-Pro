@@ -29,3 +29,6 @@ export const crearJugador =
 
 export const eliminarJugador =
   (id) => API.delete(`/jugadores/${id}`);
+
+export const limpiarTodoHistorial =
+  () => API.delete("/limpiar-todo");
