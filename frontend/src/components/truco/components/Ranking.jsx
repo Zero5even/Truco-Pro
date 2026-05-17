@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { obtenerRanking, obtenerHistorial, borrarPartida, limpiarTodoHistorial } from "../services/trucoApi";
-import logo from "../../../assets/logo_falta_envido.png";
+import { obtenerRanking, obtenerHistorial, borrarPartida } from "../services/trucoApi";
 import "../styles/truco.css";
 import "../styles/ranking.css";
 
@@ -42,16 +41,6 @@ export default function Ranking() {
     }
   };
 
-  const handleLimpiarTodo = async () => {
-    if (!window.confirm("🚨 ¡ATENCIÓN! ¿Estás seguro de que deseas eliminar TODO el historial de partidas? Todos los jugadores volverán a tener 0 partidos jugados y 0% de winrate. Esta acción no se puede deshacer.")) return;
-    try {
-      await limpiarTodoHistorial();
-      cargarDatos();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const formatearFecha = (isoString) => {
     const fecha = new Date(isoString);
     return fecha.toLocaleDateString() + " " + fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -59,18 +48,14 @@ export default function Ranking() {
 
   return (
     <div className="truco-app rankings-page-container">
-      <div className="header-container rankings-header">
-        <button className="back-btn" onClick={() => navigate("/truco")}>
+      <div className="rankings-content">
+        
+        {/* BOTON VOLVER ARRIBA DE TODO, CON EL MISMO ANCHO DE LAS TABLAS */}
+        <button className="btn-volver-top font-weight-bold" onClick={() => navigate("/truco")}>
           ⬅️ Volver
         </button>
-        <img src={logo} className="app-logo-small" alt="Falta Envido" />
-        <button className="clean-all-btn" onClick={handleLimpiarTodo} title="Reiniciar Historial de Partidas">
-          🧹 Limpiar Todo
-        </button>
-      </div>
 
-      <div className="rankings-content">
-        <h1 className="title-serif text-center mb-4 text-glow" style={{ color: "#ffdd57" }}>Estadísticas e Historial</h1>
+        <h1 className="title-serif text-center mb-4 text-glow mt-3" style={{ color: "#ffdd57" }}>Estadísticas e Historial</h1>
         
         {loading ? (
           <div className="loading-box">Cargando estadísticas...</div>
@@ -80,7 +65,7 @@ export default function Ranking() {
             {/* PANEL RANKING JUGADORES */}
             <div className="ranking-panel">
               <div className="panel-header-flex">
-                <h2>🏆 Ranking por Winrate</h2>
+                <h2>🏆 Ranking</h2>
                 <span className="badge-count">{ranking?.jugadores?.length || 0} Jugadores</span>
               </div>
               
@@ -128,7 +113,7 @@ export default function Ranking() {
             {/* PANEL HISTORIAL DE PARTIDAS */}
             <div className="ranking-panel">
               <div className="panel-header-flex">
-                <h2>📜 Historial de Partidas</h2>
+                <h2>📜 Historial</h2>
                 <span className="badge-count">{historial.length} Partidos</span>
               </div>
 
@@ -139,43 +124,38 @@ export default function Ranking() {
                   historial.map((part) => {
                     const ganoA = part.ganador === "A";
                     return (
-                      <div key={part._id} className="historial-item-compact">
-                        <div className="hist-meta-col">
-                          <div className="hist-modalidad">
-                            🎲 <strong style={{ color: "#ffdd57" }}>{part.modalidad || "Parejas"}</strong>
-                            <span className="hist-badge-pts">a {part.modo} pts</span>
-                            <span className={`hist-badge-flor ${part.conFlor ? "flor-yes" : "flor-no"}`}>
+                      <div key={part._id} className="historial-card-modern">
+                        <div className="hist-card-top">
+                          <div className="hist-meta">
+                            <span className="hist-mod font-weight-bold">🎲 {part.modalidad || "Parejas"} (a {part.modo} pts)</span>
+                            <span className={`hist-flor-tag ${part.conFlor ? "flor-yes" : "flor-no"}`}>
                               {part.conFlor ? "🌸 Flor" : "❌ Sin Flor"}
                             </span>
-                          </div>
-                          <div className="hist-submeta">
-                            📅 {formatearFecha(part.createdAt)}
-                          </div>
-                        </div>
-
-                        <div className="hist-match-col">
-                          <div className={`hist-team ${ganoA ? 'hist-winner' : 'hist-loser'}`}>
-                            <span className="hist-team-name">{part.equipoA.join(" & ")}</span>
-                            <span className="hist-team-score font-weight-bold">{part.puntosA}</span>
-                            {ganoA && <span className="hist-crown" title="Ganador">👑</span>}
+                            <span className="hist-date">📅 {formatearFecha(part.createdAt)}</span>
                           </div>
 
-                          <span className="hist-vs font-italic">vs</span>
-
-                          <div className={`hist-team ${!ganoA ? 'hist-winner' : 'hist-loser'}`}>
-                            <span className="hist-team-name">{part.equipoB.join(" & ")}</span>
-                            <span className="hist-team-score font-weight-bold">{part.puntosB}</span>
-                            {!ganoA && <span className="hist-crown" title="Ganador">👑</span>}
+                          <div className="hist-match">
+                            <div className={`hist-team-box ${ganoA ? 'winner-box' : 'loser-box'}`}>
+                              <span className="hist-name">{part.equipoA.join(" & ")}</span>
+                              <span className="hist-pts font-weight-bold">{part.puntosA}</span>
+                              {ganoA && <span className="crown font-weight-bold" title="Ganador">👑</span>}
+                            </div>
+                            <span className="hist-vs font-italic font-weight-bold">vs</span>
+                            <div className={`hist-team-box ${!ganoA ? 'winner-box' : 'loser-box'}`}>
+                              <span className="hist-name">{part.equipoB.join(" & ")}</span>
+                              <span className="hist-pts font-weight-bold">{part.puntosB}</span>
+                              {!ganoA && <span className="crown font-weight-bold" title="Ganador">👑</span>}
+                            </div>
                           </div>
                         </div>
 
-                        <div className="hist-actions-col">
+                        <div className="hist-card-bottom">
                           <button 
-                            className="btn-trash-compact" 
+                            className="btn-delete-full font-weight-bold" 
                             onClick={() => handleBorrarPartida(part._id)}
-                            title="Eliminar este partido"
+                            title="Eliminar este partido del registro"
                           >
-                            🗑️
+                            🗑️ Eliminar
                           </button>
                         </div>
                       </div>

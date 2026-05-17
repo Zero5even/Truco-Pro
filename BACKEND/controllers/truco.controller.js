@@ -135,8 +135,10 @@ export const obtenerRanking = async (req, res) => {
     const rankingJugadores = {};
 
     jugadoresDB.forEach(jug => {
-      rankingJugadores[jug.nombre] = {
-        nombre: jug.nombre,
+      if (!jug || !jug.nombre) return;
+      const nombre = jug.nombre.trim().toUpperCase();
+      rankingJugadores[nombre] = {
+        nombre: nombre,
         partidasJugadas: 0,
         victorias: 0,
         winrate: 0
@@ -144,22 +146,26 @@ export const obtenerRanking = async (req, res) => {
     });
 
     partidas.forEach(partida => {
-      const ganadores = partida.ganador === "A" ? partida.equipoA : partida.equipoB;
-      const perdedores = partida.ganador === "A" ? partida.equipoB : partida.equipoA;
+      const ganadores = partida.ganador === "A" ? (partida.equipoA || []) : (partida.equipoB || []);
+      const perdedores = partida.ganador === "A" ? (partida.equipoB || []) : (partida.equipoA || []);
 
-      ganadores.forEach(jugador => {
-        if (!rankingJugadores[jugador]) {
-          rankingJugadores[jugador] = { nombre: jugador, partidasJugadas: 0, victorias: 0, winrate: 0 };
+      ganadores.forEach(jug => {
+        if (!jug) return;
+        const nombre = jug.trim().toUpperCase();
+        if (!rankingJugadores[nombre]) {
+          rankingJugadores[nombre] = { nombre, partidasJugadas: 0, victorias: 0, winrate: 0 };
         }
-        rankingJugadores[jugador].partidasJugadas++;
-        rankingJugadores[jugador].victorias++;
+        rankingJugadores[nombre].partidasJugadas++;
+        rankingJugadores[nombre].victorias++;
       });
 
-      perdedores.forEach(jugador => {
-        if (!rankingJugadores[jugador]) {
-          rankingJugadores[jugador] = { nombre: jugador, partidasJugadas: 0, victorias: 0, winrate: 0 };
+      perdedores.forEach(jug => {
+        if (!jug) return;
+        const nombre = jug.trim().toUpperCase();
+        if (!rankingJugadores[nombre]) {
+          rankingJugadores[nombre] = { nombre, partidasJugadas: 0, victorias: 0, winrate: 0 };
         }
-        rankingJugadores[jugador].partidasJugadas++;
+        rankingJugadores[nombre].partidasJugadas++;
       });
     });
 

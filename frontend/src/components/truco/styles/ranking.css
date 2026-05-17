@@ -112,10 +112,41 @@
   background: rgba(255, 221, 87, 0.2);
   color: #ffdd57;
   border: 1px solid #ffdd57;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 6px 16px;
+  border-radius: 24px;
+  font-size: 0.95rem;
   font-weight: bold;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+/* BOTON VOLVER SUPERIOR */
+.btn-volver-top {
+  width: 100%;
+  display: block;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 221, 87, 0.4);
+  padding: 14px 24px;
+  border-radius: 20px;
+  color: #ffdd57;
+  font-size: 1.15rem;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  margin-bottom: 12px;
+  margin-top: 16px;
+}
+
+.btn-volver-top:hover {
+  background: rgba(255, 221, 87, 0.25);
+  transform: translateY(-2px);
+  color: white;
+  box-shadow: 0 12px 40px rgba(255, 221, 87, 0.3);
 }
 
 /* PREMIUM TABLE STYLES */
@@ -204,11 +235,11 @@
   font-style: italic;
 }
 
-/* HISTORIAL COMPACT STYLES */
+/* HISTORIAL CARDS MODERN STYLES */
 .historial-list-compact {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   max-height: 650px;
   overflow-y: auto;
   padding-right: 8px;
@@ -229,57 +260,50 @@
   background: rgba(255, 255, 255, 0.4);
 }
 
-.historial-item-compact {
+.historial-card-modern {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.historial-card-modern:hover {
+  border-color: rgba(255, 221, 87, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.hist-card-top {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hist-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 14px 20px;
-  transition: all 0.25s ease;
-  gap: 16px;
-}
-
-.historial-item-compact:hover {
-  border-color: rgba(255, 221, 87, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  background: rgba(0, 0, 0, 0.65);
-}
-
-.hist-meta-col {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 220px;
-}
-
-.hist-modalidad {
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #ccc;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
 }
 
-.hist-submeta {
-  font-size: 0.85rem;
-  color: #aaa;
+.hist-mod {
+  color: #ffdd57;
+  font-size: 1rem;
 }
 
-.hist-badge-pts {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2px 8px;
+.hist-flor-tag {
+  padding: 2px 10px;
   border-radius: 12px;
-  font-size: 0.75rem;
-  color: #fff;
-}
-
-.hist-badge-flor {
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: bold;
 }
 
@@ -295,81 +319,93 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.hist-match-col {
+.hist-date {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-left: auto;
+}
+
+.hist-match {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 8px 16px;
-  border-radius: 12px;
+  gap: 16px;
+  padding: 6px 0;
 }
 
-.hist-team {
+.hist-team-box {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  flex: 1;
 }
 
-.hist-winner {
-  background: linear-gradient(135deg, rgba(40, 167, 69, 0.25), rgba(0, 0, 0, 0.3));
+.winner-box {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.25), rgba(0, 0, 0, 0.4));
   border: 1px solid rgba(40, 167, 69, 0.5);
 }
 
-.hist-loser {
-  opacity: 0.75;
+.loser-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  opacity: 0.8;
 }
 
-.hist-team-name {
-  font-size: 0.95rem;
-  font-weight: 600;
+.hist-name {
+  font-size: 1.05rem;
   color: white;
+  font-weight: 600;
 }
 
-.hist-team-score {
-  font-size: 1.1rem;
+.hist-pts {
+  font-size: 1.25rem;
   color: #ffdd57;
+  margin-left: auto;
 }
 
-.hist-crown {
-  font-size: 1.1rem;
+.crown {
+  font-size: 1.25rem;
   animation: float 2s ease-in-out infinite;
 }
 
 .hist-vs {
-  color: #777;
-  font-size: 0.9rem;
+  color: #888;
+  font-size: 1rem;
   padding: 0 4px;
 }
 
-.hist-actions-col {
+.hist-card-bottom {
+  background: rgba(255, 78, 80, 0.08);
+  border-top: 1px solid rgba(255, 78, 80, 0.2);
+  padding: 12px 20px;
   display: flex;
-  align-items: center;
+  justify-content: center;
 }
 
-.btn-trash-compact {
-  background: rgba(255, 78, 80, 0.15);
-  border: 1px solid rgba(255, 78, 80, 0.4);
+.btn-delete-full {
+  width: 100%;
+  max-width: 300px;
+  background: rgba(255, 78, 80, 0.2);
+  border: 1px solid rgba(255, 78, 80, 0.5);
   color: #ff4e50;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  font-size: 1.25rem;
+  padding: 10px 20px;
+  border-radius: 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
+  gap: 8px;
 }
 
-.btn-trash-compact:hover {
+.btn-delete-full:hover {
   background: #ff4e50;
   color: white;
-  transform: scale(1.1);
-  box-shadow: 0 0 12px rgba(255, 78, 80, 0.5);
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(255, 78, 80, 0.4);
 }
 
 .loading-box {
@@ -387,27 +423,16 @@
   50% { transform: translateY(-4px); }
 }
 
-@media (max-width: 768px) {
-  .historial-item-compact {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-  .hist-match-col {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .hist-actions-col {
-    justify-content: flex-end;
-  }
-}
-
 @media (max-width: 600px) {
-  .rankings-header {
-    padding: 10px;
+  .hist-match {
+    flex-direction: column;
+    gap: 8px;
   }
-  .app-logo-small {
-    height: 38px;
+  .hist-team-box {
+    width: 100%;
+  }
+  .btn-delete-full {
+    max-width: 100%;
   }
   .ranking-panel {
     padding: 16px;
