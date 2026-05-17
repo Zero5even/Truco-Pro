@@ -16,14 +16,70 @@ export default function Ranking() {
     return () => document.body.classList.remove("fondo-madera");
   }, []);
 
+  const calcularRankingEnCliente = (partidas, rankingBackend) => {
+    const mapJugadores = {};
+
+    if (rankingBackend && rankingBackend.jugadores) {
+      rankingBackend.jugadores.forEach(j => {
+        if (j && j.nombre) {
+          const nom = j.nombre.trim().toUpperCase();
+          mapJugadores[nom] = { nombre: nom, partidasJugadas: 0, victorias: 0, winrate: 0 };
+        }
+      });
+    }
+
+    partidas.forEach(p => {
+      const ganoA = p.ganador === "A";
+      const ganadores = (ganoA ? p.equipoA : p.equipoB) || [];
+      const perdedores = (ganoA ? p.equipoB : p.equipoA) || [];
+
+      ganadores.forEach(jug => {
+        if (!jug) return;
+        const nom = jug.trim().toUpperCase();
+        if (!mapJugadores[nom]) {
+          mapJugadores[nom] = { nombre: nom, partidasJugadas: 0, victorias: 0, winrate: 0 };
+        }
+        mapJugadores[nom].partidasJugadas++;
+        mapJugadores[nom].victorias++;
+      });
+
+      perdedores.forEach(jug => {
+        if (!jug) return;
+        const nom = jug.trim().toUpperCase();
+        if (!mapJugadores[nom]) {
+          mapJugadores[nom] = { nombre: nom, partidasJugadas: 0, victorias: 0, winrate: 0 };
+        }
+        mapJugadores[nom].partidasJugadas++;
+      });
+    });
+
+    Object.values(mapJugadores).forEach(j => {
+      if (j.partidasJugadas > 0) {
+        j.winrate = Math.round((j.victorias / j.partidasJugadas) * 100);
+      } else {
+        j.winrate = 0;
+      }
+    });
+
+    const ordenados = Object.values(mapJugadores).sort((a, b) => {
+      if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+      return b.partidasJugadas - a.partidasJugadas;
+    });
+
+    return { jugadores: ordenados };
+  };
+
   const cargarDatos = async () => {
     setLoading(true);
     try {
       const resRanking = await obtenerRanking();
       const resHistorial = await obtenerHistorial();
-      setRanking(resRanking.data);
-      const ordenado = resHistorial.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setHistorial(ordenado);
+      
+      const ordenadoHistorial = resHistorial.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setHistorial(ordenadoHistorial);
+
+      const rankingConsistente = calcularRankingEnCliente(ordenadoHistorial, resRanking.data);
+      setRanking(rankingConsistente);
     } catch (e) {
       console.error(e);
     } finally {
