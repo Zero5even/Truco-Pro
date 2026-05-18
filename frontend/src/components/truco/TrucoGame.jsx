@@ -177,7 +177,7 @@ export default function TrucoGame() {
         <img src={logo} className="app-logo" alt="Falta Envido" />
         
         {/* TOP MENU BOTON */}
-        <button className="menu-btn header-menu-btn" onClick={() => setShowMenu(true)} title="Menú de Ajustes">
+        <button className="menu-btn top-right-menu-btn" onClick={() => setShowMenu(true)} title="Menú de Ajustes">
           <div className="hamburger-icon">
             <span></span>
             <span></span>
@@ -197,7 +197,7 @@ export default function TrucoGame() {
           <button className="close-drawer" onClick={() => setShowMenu(false)}>✕</button>
         </div>
         <div className="drawer-content">
-          <button className="home-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/"); }}>
+          <button className="home-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco"); }}>
             🏠 Inicio / Home
           </button>
           <button className="ranking-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>

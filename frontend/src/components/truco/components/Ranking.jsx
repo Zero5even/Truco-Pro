@@ -9,6 +9,7 @@ export default function Ranking() {
   const [ranking, setRanking] = useState(null);
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     document.body.classList.add("fondo-madera");
@@ -18,6 +19,7 @@ export default function Ranking() {
 
   const calcularRankingEnCliente = (partidas, rankingBackend) => {
     const mapJugadores = {};
+    const mapParejas = {};
 
     if (rankingBackend && rankingBackend.jugadores) {
       rankingBackend.jugadores.forEach(j => {
@@ -33,6 +35,7 @@ export default function Ranking() {
       const ganadores = (ganoA ? p.equipoA : p.equipoB) || [];
       const perdedores = (ganoA ? p.equipoB : p.equipoA) || [];
 
+      // Ranking individual
       ganadores.forEach(jug => {
         if (!jug) return;
         const nom = jug.trim().toUpperCase();
@@ -51,6 +54,34 @@ export default function Ranking() {
         }
         mapJugadores[nom].partidasJugadas++;
       });
+
+      // Ranking por parejas (2v2)
+      if (p.equipoA && p.equipoA.length === 2 && p.equipoB && p.equipoB.length === 2) {
+        // Ganadores pareja
+        const g1 = ganadores[0]?.trim();
+        const g2 = ganadores[1]?.trim();
+        if (g1 && g2) {
+          const keyUpper = [g1.toUpperCase(), g2.toUpperCase()].sort().join(" & ");
+          const display = [g1, g2].sort((a, b) => a.toUpperCase().localeCompare(b.toUpperCase())).join(" & ");
+          if (!mapParejas[keyUpper]) {
+            mapParejas[keyUpper] = { nombre: display, partidasJugadas: 0, victorias: 0, winrate: 0 };
+          }
+          mapParejas[keyUpper].partidasJugadas++;
+          mapParejas[keyUpper].victorias++;
+        }
+
+        // Perdedores pareja
+        const per1 = perdedores[0]?.trim();
+        const per2 = perdedores[1]?.trim();
+        if (per1 && per2) {
+          const keyUpper = [per1.toUpperCase(), per2.toUpperCase()].sort().join(" & ");
+          const display = [per1, per2].sort((a, b) => a.toUpperCase().localeCompare(b.toUpperCase())).join(" & ");
+          if (!mapParejas[keyUpper]) {
+            mapParejas[keyUpper] = { nombre: display, partidasJugadas: 0, victorias: 0, winrate: 0 };
+          }
+          mapParejas[keyUpper].partidasJugadas++;
+        }
+      }
     });
 
     Object.values(mapJugadores).forEach(j => {
@@ -61,12 +92,25 @@ export default function Ranking() {
       }
     });
 
-    const ordenados = Object.values(mapJugadores).sort((a, b) => {
+    Object.values(mapParejas).forEach(par => {
+      if (par.partidasJugadas > 0) {
+        par.winrate = Math.round((par.victorias / par.partidasJugadas) * 100);
+      } else {
+        par.winrate = 0;
+      }
+    });
+
+    const ordenadosJugadores = Object.values(mapJugadores).sort((a, b) => {
       if (b.winrate !== a.winrate) return b.winrate - a.winrate;
       return b.partidasJugadas - a.partidasJugadas;
     });
 
-    return { jugadores: ordenados };
+    const ordenadosParejas = Object.values(mapParejas).sort((a, b) => {
+      if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+      return b.partidasJugadas - a.partidasJugadas;
+    });
+
+    return { jugadores: ordenadosJugadores, parejas: ordenadosParejas };
   };
 
   const cargarDatos = async () => {
@@ -104,6 +148,35 @@ export default function Ranking() {
 
   return (
     <div className="truco-app rankings-page-container">
+      {/* TOP MENU BOTON */}
+      <button className="menu-btn top-right-menu-btn" onClick={() => setShowMenu(true)} title="Menú de Ajustes">
+        <div className="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+
+      {/* SIDE MENU DRAWER */}
+      <div 
+        className={`side-menu-overlay ${showMenu ? 'show' : ''}`} 
+        onClick={() => setShowMenu(false)}
+      ></div>
+      <div className={`side-menu-drawer ${showMenu ? 'open' : ''}`}>
+        <div className="drawer-header">
+          <h2 className="title-serif">Ajustes</h2>
+          <button className="close-drawer" onClick={() => setShowMenu(false)}>✕</button>
+        </div>
+        <div className="drawer-content">
+          <button className="home-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco"); }}>
+            🏠 Inicio / Home
+          </button>
+          <button className="ranking-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>
+            🏆 Rankings e Historial
+          </button>
+        </div>
+      </div>
+
       <div className="rankings-content">
         
         {/* BOTON VOLVER ARRIBA DE TODO, CON EL MISMO ANCHO DE LAS TABLAS */}
@@ -157,6 +230,54 @@ export default function Ranking() {
                               </span>
                             </td>
                             <td className="pj-cell">{jug.partidasJugadas}</td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* PANEL PAREJAS IDEALES */}
+            <div className="ranking-panel">
+              <div className="panel-header-flex">
+                <h2>🤝 Parejas ideales</h2>
+                <span className="badge-count">{ranking?.parejas?.length || 0} Parejas</span>
+              </div>
+              
+              <div className="table-responsive">
+                <table className="premium-table">
+                  <thead>
+                    <tr>
+                      <th>Pos</th>
+                      <th>Pareja</th>
+                      <th>Winrate</th>
+                      <th>PJ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(!ranking?.parejas || ranking.parejas.length === 0) ? (
+                      <tr>
+                        <td colSpan="4" className="text-center empty-msg">No hay parejas de 2v2 registradas aún.</td>
+                      </tr>
+                    ) : (
+                      ranking.parejas.map((par, i) => {
+                        let badgeClass = "badge-silver";
+                        if (i === 0 && par.partidasJugadas > 0) badgeClass = "badge-gold";
+                        if (i === 1 && par.partidasJugadas > 0) badgeClass = "badge-silver";
+                        if (i === 2 && par.partidasJugadas > 0) badgeClass = "badge-bronze";
+                        
+                        return (
+                          <tr key={par.nombre} className={i < 3 && par.partidasJugadas > 0 ? "top-row" : ""}>
+                            <td className="pos-cell font-weight-bold">#{i + 1}</td>
+                            <td className="name-cell font-weight-bold">{par.nombre}</td>
+                            <td className="winrate-cell">
+                              <span className={`winrate-badge ${badgeClass}`}>
+                                {par.partidasJugadas > 0 ? `${par.winrate}%` : "-"}
+                              </span>
+                            </td>
+                            <td className="pj-cell">{par.partidasJugadas}</td>
                           </tr>
                         );
                       })
