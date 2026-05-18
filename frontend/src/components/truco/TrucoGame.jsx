@@ -203,17 +203,21 @@ export default function TrucoGame() {
           <button className="ranking-menu-btn font-weight-bold" onClick={() => { setShowMenu(false); navigate("/truco/rankings"); }}>
             🏆 Rankings e Historial
           </button>
-          <div className="drawer-divider"></div>
-          <button onClick={() => { setInputMethod(inputMethod === "classic" ? "dynamic" : "classic"); setShowMenu(false); }}>
-            Cambiar a {inputMethod === "classic" ? "Dinámico" : "Clásico"}
-          </button>
-          <button onClick={() => { setFlorEnabled(!florEnabled); setShowMenu(false); }}>
-            {florEnabled ? "Quitar Flor" : "Habilitar Flor"}
-          </button>
-          <div className="drawer-divider"></div>
-          <button className="danger font-weight-bold" onClick={() => nuevaPartida(true)}>
-            Reiniciar Partida
-          </button>
+          {gameStarted && (
+            <>
+              <div className="drawer-divider"></div>
+              <button onClick={() => { setInputMethod(inputMethod === "classic" ? "dynamic" : "classic"); setShowMenu(false); }}>
+                Cambiar a {inputMethod === "classic" ? "Dinámico" : "Clásico"}
+              </button>
+              <button onClick={() => { setFlorEnabled(!florEnabled); setShowMenu(false); }}>
+                {florEnabled ? "Quitar Flor" : "Habilitar Flor"}
+              </button>
+              <div className="drawer-divider"></div>
+              <button className="danger font-weight-bold" onClick={() => nuevaPartida(true)}>
+                Reiniciar Partida
+              </button>
+            </>
+          )}
         </div>
       </div>
 

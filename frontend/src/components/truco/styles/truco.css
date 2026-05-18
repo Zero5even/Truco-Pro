@@ -57,7 +57,7 @@ body.fondo-madera {
   position: fixed;
   right: 25px;
   top: 25px;
-  z-index: 1100;
+  z-index: 990;
 }
 
 .menu-btn {
