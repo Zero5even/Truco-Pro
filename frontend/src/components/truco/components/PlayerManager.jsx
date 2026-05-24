@@ -253,9 +253,17 @@ export default function PlayerManager({
 
       {/* ACTIONS */}
       <div className="players-actions">
+        {selectedPlayers.length === 2 && (
+          <button 
+            className="confirm-btn"
+            onClick={() => onEquiposDefinidos([selectedPlayers[0].nombre], [selectedPlayers[1].nombre])}
+          >
+            ⚔️ Jugar Mano a Mano (1v1)
+          </button>
+        )}
         <button 
           className="shuffle-btn"
-          disabled={selectedPlayers.length < 4}
+          disabled={![3, 4, 5, 6].includes(selectedPlayers.length)}
           onClick={() => onSorteo(selectedPlayers.map(p => p.nombre))}
         >
           👑 Tirar los Reyes

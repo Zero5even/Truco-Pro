@@ -87,28 +87,40 @@ export default function Ranking() {
     Object.values(mapJugadores).forEach(j => {
       if (j.partidasJugadas > 0) {
         j.winrate = Math.round((j.victorias / j.partidasJugadas) * 100);
+        // Bayesian Average Score: (victorias + 2) / (partidasJugadas + 4) * 100
+        j.score = Math.round(((j.victorias + 2) / (j.partidasJugadas + 4)) * 100 * 10) / 10;
       } else {
         j.winrate = 0;
+        j.score = 50.0;
       }
     });
 
     Object.values(mapParejas).forEach(par => {
       if (par.partidasJugadas > 0) {
         par.winrate = Math.round((par.victorias / par.partidasJugadas) * 100);
+        // Bayesian Average Score: (victorias + 2) / (partidasJugadas + 4) * 100
+        par.score = Math.round(((par.victorias + 2) / (par.partidasJugadas + 4)) * 100 * 10) / 10;
       } else {
         par.winrate = 0;
+        par.score = 50.0;
       }
     });
 
-    const ordenadosJugadores = Object.values(mapJugadores).sort((a, b) => {
-      if (b.winrate !== a.winrate) return b.winrate - a.winrate;
-      return b.partidasJugadas - a.partidasJugadas;
-    });
+    const ordenadosJugadores = Object.values(mapJugadores)
+      .filter(j => j.partidasJugadas > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+        return b.partidasJugadas - a.partidasJugadas;
+      });
 
-    const ordenadosParejas = Object.values(mapParejas).sort((a, b) => {
-      if (b.winrate !== a.winrate) return b.winrate - a.winrate;
-      return b.partidasJugadas - a.partidasJugadas;
-    });
+    const ordenadosParejas = Object.values(mapParejas)
+      .filter(par => par.partidasJugadas > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+        return b.partidasJugadas - a.partidasJugadas;
+      });
 
     return { jugadores: ordenadosJugadores, parejas: ordenadosParejas };
   };
@@ -204,14 +216,15 @@ export default function Ranking() {
                     <tr>
                       <th>Pos</th>
                       <th>Jugador</th>
-                      <th>Winrate</th>
+                      <th title="Efectividad Ajustada por cantidad de partidos (Fórmula Bayesiana)">Rendimiento</th>
+                      <th>Efectividad</th>
                       <th>PJ</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(!ranking?.jugadores || ranking.jugadores.length === 0) ? (
                       <tr>
-                        <td colSpan="4" className="text-center empty-msg">No hay jugadores registrados.</td>
+                        <td colSpan="5" className="text-center empty-msg">No hay jugadores registrados.</td>
                       </tr>
                     ) : (
                       ranking.jugadores.map((jug, i) => {
@@ -224,6 +237,9 @@ export default function Ranking() {
                           <tr key={jug.nombre} className={i < 3 && jug.partidasJugadas > 0 ? "top-row" : ""}>
                             <td className="pos-cell font-weight-bold">#{i + 1}</td>
                             <td className="name-cell font-weight-bold">{jug.nombre}</td>
+                            <td className="winrate-cell font-weight-bold" style={{ color: "#ffdd57" }}>
+                              {jug.partidasJugadas > 0 ? `${jug.score.toFixed(1)}%` : "-"}
+                            </td>
                             <td className="winrate-cell">
                               <span className={`winrate-badge ${badgeClass}`}>
                                 {jug.partidasJugadas > 0 ? `${jug.winrate}%` : "-"}
@@ -252,14 +268,15 @@ export default function Ranking() {
                     <tr>
                       <th>Pos</th>
                       <th>Pareja</th>
-                      <th>Winrate</th>
+                      <th title="Efectividad Ajustada por cantidad de partidos (Fórmula Bayesiana)">Rendimiento</th>
+                      <th>Efectividad</th>
                       <th>PJ</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(!ranking?.parejas || ranking.parejas.length === 0) ? (
                       <tr>
-                        <td colSpan="4" className="text-center empty-msg">No hay parejas de 2v2 registradas aún.</td>
+                        <td colSpan="5" className="text-center empty-msg">No hay parejas de 2v2 registradas aún.</td>
                       </tr>
                     ) : (
                       ranking.parejas.map((par, i) => {
@@ -272,6 +289,9 @@ export default function Ranking() {
                           <tr key={par.nombre} className={i < 3 && par.partidasJugadas > 0 ? "top-row" : ""}>
                             <td className="pos-cell font-weight-bold">#{i + 1}</td>
                             <td className="name-cell font-weight-bold">{par.nombre}</td>
+                            <td className="winrate-cell font-weight-bold" style={{ color: "#ffdd57" }}>
+                              {par.partidasJugadas > 0 ? `${par.score.toFixed(1)}%` : "-"}
+                            </td>
                             <td className="winrate-cell">
                               <span className={`winrate-badge ${badgeClass}`}>
                                 {par.partidasJugadas > 0 ? `${par.winrate}%` : "-"}

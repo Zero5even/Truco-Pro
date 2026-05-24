@@ -32,7 +32,7 @@ export default function SorteoReyes({ jugadores, onEquiposDefinidos, onCancel })
   const [equipos, setEquipos] = useState(null);
 
   useEffect(() => {
-    if (sorteoTerminado || jugadores.length < 4 || indiceMazo >= mazo.length) return;
+    if (sorteoTerminado || ![3, 4, 5, 6].includes(jugadores.length) || indiceMazo >= mazo.length) return;
 
     const timer = setTimeout(() => {
       // Si el jugador actual ya tiene un rey, saltamos su turno inmediatamente
@@ -55,25 +55,47 @@ export default function SorteoReyes({ jugadores, onEquiposDefinidos, onCancel })
         const nuevosReyes = [...reyes, turno];
         setReyes(nuevosReyes);
         
-        // Criterio dinámico: 
-        // Si hay exactamente 4 jugadores, bastan 2 reyes para armar los equipos.
-        // Si hay más de 4 jugadores, necesitamos 4 reyes para filtrar quiénes juegan.
-        const limiteReyes = jugadores.length === 4 ? 2 : 4;
+        // Criterio dinámico:
+        // Si hay 3 o 4 jugadores, bastan 2 reyes para definir el enfrentamiento/equipos.
+        // Si hay 5 jugadores, requerimos 4 reyes para definir el 2v2.
+        // Si hay 6 jugadores, necesitamos 3 reyes (partida 3v3).
+        let limiteReyes = 2;
+        if (jugadores.length === 5) {
+          limiteReyes = 4;
+        } else if (jugadores.length === 6) {
+          limiteReyes = 3;
+        } else if (jugadores.length === 3 || jugadores.length === 4) {
+          limiteReyes = 2;
+        }
         
         if (nuevosReyes.length === limiteReyes) {
           setSorteoTerminado(true);
           
           let teamA, teamB;
           
-          if (jugadores.length === 4) {
+          if (jugadores.length === 3) {
+            // Con 3 jugadores, el primer rey es del Equipo A y el segundo del Equipo B
+            teamA = [jugadores[nuevosReyes[0]]];
+            teamB = [jugadores[nuevosReyes[1]]];
+          } else if (jugadores.length === 4) {
             // Con 4 jugadores, los dos reyes son el equipo A, los otros el B
             teamA = [jugadores[nuevosReyes[0]], jugadores[nuevosReyes[1]]];
             const indicesRestantes = [0, 1, 2, 3].filter(i => !nuevosReyes.includes(i));
             teamB = [jugadores[indicesRestantes[0]], jugadores[indicesRestantes[1]]];
-          } else {
-            // Con más de 4, los 4 reyes son los que juegan
+          } else if (jugadores.length === 5) {
+            // Con 5 jugadores, los primeros 2 reyes son Equipo A, los reyes 3 y 4 son Equipo B
             teamA = [jugadores[nuevosReyes[0]], jugadores[nuevosReyes[1]]];
             teamB = [jugadores[nuevosReyes[2]], jugadores[nuevosReyes[3]]];
+          } else if (jugadores.length === 6) {
+            // Con 6 jugadores, los primeros 3 reyes son el equipo A, los otros 3 el B
+            teamA = [jugadores[nuevosReyes[0]], jugadores[nuevosReyes[1]], jugadores[nuevosReyes[2]]];
+            const indicesRestantes = [0, 1, 2, 3, 4, 5].filter(i => !nuevosReyes.includes(i));
+            teamB = [jugadores[indicesRestantes[0]], jugadores[indicesRestantes[1]], jugadores[indicesRestantes[2]]];
+          } else {
+            // Por defecto por seguridad
+            teamA = nuevosReyes.map(idx => jugadores[idx]);
+            const indicesRestantes = jugadores.map((_, i) => i).filter(i => !nuevosReyes.includes(i));
+            teamB = indicesRestantes.map(idx => jugadores[idx]);
           }
           
           setEquipos({ equipoA: teamA, equipoB: teamB });
@@ -105,9 +127,31 @@ export default function SorteoReyes({ jugadores, onEquiposDefinidos, onCancel })
           const carta = cartas[index];
           const esRey = reyes.includes(index);
           const indexEnReyes = reyes.indexOf(index);
-          const esEquipoA = sorteoTerminado && (indexEnReyes === 0 || indexEnReyes === 1);
-          const esEquipoB = sorteoTerminado && (indexEnReyes === 2 || indexEnReyes === 3);
-          const enEspera = sorteoTerminado && !esRey;
+          
+          let esEquipoA = false;
+          let esEquipoB = false;
+          let enEspera = false;
+          
+          if (sorteoTerminado) {
+            if (jugadores.length === 3) {
+              esEquipoA = indexEnReyes === 0;
+              esEquipoB = indexEnReyes === 1;
+              enEspera = !esRey;
+            } else if (jugadores.length === 4) {
+              esEquipoA = esRey; // los dos reyes
+              esEquipoB = !esRey; // los otros dos
+            } else if (jugadores.length === 5) {
+              esEquipoA = indexEnReyes === 0 || indexEnReyes === 1; // reyes 1 y 2
+              esEquipoB = indexEnReyes === 2 || indexEnReyes === 3; // reyes 3 y 4
+              enEspera = !esRey; // el 5to queda en espera
+            } else if (jugadores.length === 6) {
+              esEquipoA = esRey; // los tres reyes
+              esEquipoB = !esRey; // los otros tres
+            } else {
+              esEquipoA = esRey;
+              esEquipoB = !esRey;
+            }
+          }
 
           return (
             <div 

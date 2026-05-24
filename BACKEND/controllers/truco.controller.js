@@ -172,12 +172,20 @@ export const obtenerRanking = async (req, res) => {
     Object.values(rankingJugadores).forEach(jug => {
       if (jug.partidasJugadas > 0) {
         jug.winrate = Math.round((jug.victorias / jug.partidasJugadas) * 100);
+        // Bayesian Average Score: (victorias + 2) / (partidasJugadas + 4) * 100
+        jug.score = Math.round(((jug.victorias + 2) / (jug.partidasJugadas + 4)) * 100 * 10) / 10;
       } else {
         jug.winrate = 0;
+        jug.score = 50.0;
       }
     });
 
-    const jugadoresOrdenados = Object.values(rankingJugadores).sort((a, b) => {
+    const jugadoresConPartidas = Object.values(rankingJugadores).filter(jug => jug.partidasJugadas > 0);
+
+    const jugadoresOrdenados = jugadoresConPartidas.sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
       if (b.winrate !== a.winrate) {
         return b.winrate - a.winrate;
       }
