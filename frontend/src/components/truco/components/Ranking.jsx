@@ -20,6 +20,7 @@ export default function Ranking() {
   const calcularRankingEnCliente = (partidas, rankingBackend) => {
     const mapJugadores = {};
     const mapParejas = {};
+    const mapTrios = {};
 
     if (rankingBackend && rankingBackend.jugadores) {
       rankingBackend.jugadores.forEach(j => {
@@ -57,7 +58,6 @@ export default function Ranking() {
 
       // Ranking por parejas (2v2)
       if (p.equipoA && p.equipoA.length === 2 && p.equipoB && p.equipoB.length === 2) {
-        // Ganadores pareja
         const g1 = ganadores[0]?.trim();
         const g2 = ganadores[1]?.trim();
         if (g1 && g2) {
@@ -69,8 +69,6 @@ export default function Ranking() {
           mapParejas[keyUpper].partidasJugadas++;
           mapParejas[keyUpper].victorias++;
         }
-
-        // Perdedores pareja
         const per1 = perdedores[0]?.trim();
         const per2 = perdedores[1]?.trim();
         if (per1 && per2) {
@@ -80,6 +78,29 @@ export default function Ranking() {
             mapParejas[keyUpper] = { nombre: display, partidasJugadas: 0, victorias: 0, winrate: 0 };
           }
           mapParejas[keyUpper].partidasJugadas++;
+        }
+      }
+
+      // Ranking por tríos (3v3)
+      if (p.equipoA && p.equipoA.length === 3 && p.equipoB && p.equipoB.length === 3) {
+        const gNames = ganadores.filter(Boolean).map(n => n.trim());
+        if (gNames.length === 3) {
+          const keyUpper = gNames.map(n => n.toUpperCase()).sort().join(" & ");
+          const display = [...gNames].sort((a, b) => a.toUpperCase().localeCompare(b.toUpperCase())).join(" & ");
+          if (!mapTrios[keyUpper]) {
+            mapTrios[keyUpper] = { nombre: display, partidasJugadas: 0, victorias: 0, winrate: 0 };
+          }
+          mapTrios[keyUpper].partidasJugadas++;
+          mapTrios[keyUpper].victorias++;
+        }
+        const pNames = perdedores.filter(Boolean).map(n => n.trim());
+        if (pNames.length === 3) {
+          const keyUpper = pNames.map(n => n.toUpperCase()).sort().join(" & ");
+          const display = [...pNames].sort((a, b) => a.toUpperCase().localeCompare(b.toUpperCase())).join(" & ");
+          if (!mapTrios[keyUpper]) {
+            mapTrios[keyUpper] = { nombre: display, partidasJugadas: 0, victorias: 0, winrate: 0 };
+          }
+          mapTrios[keyUpper].partidasJugadas++;
         }
       }
     });
@@ -122,7 +143,25 @@ export default function Ranking() {
         return b.partidasJugadas - a.partidasJugadas;
       });
 
-    return { jugadores: ordenadosJugadores, parejas: ordenadosParejas };
+    Object.values(mapTrios).forEach(trio => {
+      if (trio.partidasJugadas > 0) {
+        trio.winrate = Math.round((trio.victorias / trio.partidasJugadas) * 100);
+        trio.score = Math.round(((trio.victorias + 2) / (trio.partidasJugadas + 4)) * 100 * 10) / 10;
+      } else {
+        trio.winrate = 0;
+        trio.score = 50.0;
+      }
+    });
+
+    const ordenadosTrios = Object.values(mapTrios)
+      .filter(t => t.partidasJugadas > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.winrate !== a.winrate) return b.winrate - a.winrate;
+        return b.partidasJugadas - a.partidasJugadas;
+      });
+
+    return { jugadores: ordenadosJugadores, parejas: ordenadosParejas, trios: ordenadosTrios };
   };
 
   const cargarDatos = async () => {
@@ -216,8 +255,11 @@ export default function Ranking() {
                     <tr>
                       <th>Pos</th>
                       <th>Jugador</th>
-                      <th title="Efectividad Ajustada por cantidad de partidos (Fórmula Bayesiana)">Rendimiento</th>
-                      <th>Efectividad</th>
+                      <th className="th-rendimiento" title="Efectividad ajustada por cantidad de partidos (Fórmula Bayesiana)">
+                        <span className="th-full">Rendimiento</span>
+                        <span className="th-short">Rend.</span>
+                      </th>
+                      <th>Winrate</th>
                       <th>PJ</th>
                     </tr>
                   </thead>
@@ -232,18 +274,18 @@ export default function Ranking() {
                         if (i === 0 && jug.partidasJugadas > 0) badgeClass = "badge-gold";
                         if (i === 1 && jug.partidasJugadas > 0) badgeClass = "badge-silver";
                         if (i === 2 && jug.partidasJugadas > 0) badgeClass = "badge-bronze";
-                        
+
                         return (
                           <tr key={jug.nombre} className={i < 3 && jug.partidasJugadas > 0 ? "top-row" : ""}>
                             <td className="pos-cell font-weight-bold">#{i + 1}</td>
                             <td className="name-cell font-weight-bold">{jug.nombre}</td>
-                            <td className="winrate-cell font-weight-bold" style={{ color: "#ffdd57" }}>
-                              {jug.partidasJugadas > 0 ? `${jug.score.toFixed(1)}%` : "-"}
-                            </td>
-                            <td className="winrate-cell">
+                            <td className="winrate-cell font-weight-bold">
                               <span className={`winrate-badge ${badgeClass}`}>
-                                {jug.partidasJugadas > 0 ? `${jug.winrate}%` : "-"}
+                                {jug.partidasJugadas > 0 ? `${jug.score.toFixed(1)}%` : "-"}
                               </span>
+                            </td>
+                            <td className="winrate-cell" style={{ color: "#aaa" }}>
+                              {jug.partidasJugadas > 0 ? `${jug.winrate}%` : "-"}
                             </td>
                             <td className="pj-cell">{jug.partidasJugadas}</td>
                           </tr>
@@ -268,8 +310,11 @@ export default function Ranking() {
                     <tr>
                       <th>Pos</th>
                       <th>Pareja</th>
-                      <th title="Efectividad Ajustada por cantidad de partidos (Fórmula Bayesiana)">Rendimiento</th>
-                      <th>Efectividad</th>
+                      <th className="th-rendimiento" title="Efectividad ajustada por cantidad de partidos (Fórmula Bayesiana)">
+                        <span className="th-full">Rendimiento</span>
+                        <span className="th-short">Rend.</span>
+                      </th>
+                      <th>Winrate</th>
                       <th>PJ</th>
                     </tr>
                   </thead>
@@ -284,20 +329,75 @@ export default function Ranking() {
                         if (i === 0 && par.partidasJugadas > 0) badgeClass = "badge-gold";
                         if (i === 1 && par.partidasJugadas > 0) badgeClass = "badge-silver";
                         if (i === 2 && par.partidasJugadas > 0) badgeClass = "badge-bronze";
-                        
+
                         return (
                           <tr key={par.nombre} className={i < 3 && par.partidasJugadas > 0 ? "top-row" : ""}>
                             <td className="pos-cell font-weight-bold">#{i + 1}</td>
                             <td className="name-cell font-weight-bold">{par.nombre}</td>
-                            <td className="winrate-cell font-weight-bold" style={{ color: "#ffdd57" }}>
-                              {par.partidasJugadas > 0 ? `${par.score.toFixed(1)}%` : "-"}
-                            </td>
-                            <td className="winrate-cell">
+                            <td className="winrate-cell font-weight-bold">
                               <span className={`winrate-badge ${badgeClass}`}>
-                                {par.partidasJugadas > 0 ? `${par.winrate}%` : "-"}
+                                {par.partidasJugadas > 0 ? `${par.score.toFixed(1)}%` : "-"}
                               </span>
                             </td>
+                            <td className="winrate-cell" style={{ color: "#aaa" }}>
+                              {par.partidasJugadas > 0 ? `${par.winrate}%` : "-"}
+                            </td>
                             <td className="pj-cell">{par.partidasJugadas}</td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* PANEL TRÍOS (3v3) */}
+            <div className="ranking-panel">
+              <div className="panel-header-flex">
+                <h2>🎯 Pica Pica (3v3)</h2>
+                <span className="badge-count">{ranking?.trios?.length || 0} Tríos</span>
+              </div>
+
+              <div className="table-responsive">
+                <table className="premium-table">
+                  <thead>
+                    <tr>
+                      <th>Pos</th>
+                      <th>Trío</th>
+                      <th className="th-rendimiento" title="Efectividad ajustada por cantidad de partidos (Fórmula Bayesiana)">
+                        <span className="th-full">Rendimiento</span>
+                        <span className="th-short">Rend.</span>
+                      </th>
+                      <th>Winrate</th>
+                      <th>PJ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(!ranking?.trios || ranking.trios.length === 0) ? (
+                      <tr>
+                        <td colSpan="5" className="text-center empty-msg">No hay partidas de 3v3 registradas aún.</td>
+                      </tr>
+                    ) : (
+                      ranking.trios.map((trio, i) => {
+                        let badgeClass = "badge-silver";
+                        if (i === 0 && trio.partidasJugadas > 0) badgeClass = "badge-gold";
+                        if (i === 1 && trio.partidasJugadas > 0) badgeClass = "badge-silver";
+                        if (i === 2 && trio.partidasJugadas > 0) badgeClass = "badge-bronze";
+
+                        return (
+                          <tr key={trio.nombre} className={i < 3 && trio.partidasJugadas > 0 ? "top-row" : ""}>
+                            <td className="pos-cell font-weight-bold">#{i + 1}</td>
+                            <td className="name-cell font-weight-bold">{trio.nombre}</td>
+                            <td className="winrate-cell font-weight-bold">
+                              <span className={`winrate-badge ${badgeClass}`}>
+                                {trio.partidasJugadas > 0 ? `${trio.score.toFixed(1)}%` : "-"}
+                              </span>
+                            </td>
+                            <td className="winrate-cell" style={{ color: "#aaa" }}>
+                              {trio.partidasJugadas > 0 ? `${trio.winrate}%` : "-"}
+                            </td>
+                            <td className="pj-cell">{trio.partidasJugadas}</td>
                           </tr>
                         );
                       })

@@ -79,8 +79,8 @@ export default function PlayerManager({
   };
 
   const iniciarArmadoManual = () => {
-    if (selectedPlayers.length !== 4) {
-      alert("Para armar equipos manualmente debes seleccionar exactamente 4 jugadores.");
+    if (![4, 6].includes(selectedPlayers.length)) {
+      alert("Para armar equipos manualmente debes seleccionar 4 o 6 jugadores.");
       return;
     }
     setManualTeamA([]);
@@ -89,10 +89,11 @@ export default function PlayerManager({
   };
 
   const assignToTeam = (jugador, team) => {
+    const teamSize = selectedPlayers.length / 2;
     if (team === 'A') {
-      if (manualTeamA.length < 2) setManualTeamA(prev => [...prev, jugador]);
+      if (manualTeamA.length < teamSize) setManualTeamA(prev => [...prev, jugador]);
     } else {
-      if (manualTeamB.length < 2) setManualTeamB(prev => [...prev, jugador]);
+      if (manualTeamB.length < teamSize) setManualTeamB(prev => [...prev, jugador]);
     }
   };
 
@@ -105,7 +106,8 @@ export default function PlayerManager({
   };
 
   const confirmarEquiposManuales = () => {
-    if (manualTeamA.length === 2 && manualTeamB.length === 2) {
+    const teamSize = selectedPlayers.length / 2;
+    if (manualTeamA.length === teamSize && manualTeamB.length === teamSize) {
       onEquiposDefinidos(
         manualTeamA.map(p => p.nombre),
         manualTeamB.map(p => p.nombre)
@@ -130,8 +132,9 @@ export default function PlayerManager({
     );
 
     const autoAssign = (jugador) => {
-      if (manualTeamA.length < 2) assignToTeam(jugador, 'A');
-      else if (manualTeamB.length < 2) assignToTeam(jugador, 'B');
+      const teamSize = selectedPlayers.length / 2;
+      if (manualTeamA.length < teamSize) assignToTeam(jugador, 'A');
+      else if (manualTeamB.length < teamSize) assignToTeam(jugador, 'B');
     };
 
     return (
@@ -156,7 +159,7 @@ export default function PlayerManager({
 
         <div className="manual-teams-container">
           <div 
-            className={`manual-team drop-zone ${manualTeamA.length < 2 ? 'active' : 'full'}`}
+            className={`manual-team drop-zone ${manualTeamA.length < selectedPlayers.length / 2 ? 'active' : 'full'}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => onDrop(e, 'A')}
           >
@@ -167,12 +170,12 @@ export default function PlayerManager({
                   {j.nombre} <span className="remove-icon">✕</span>
                 </div>
               ))}
-              {manualTeamA.length < 2 && <div className="slot-placeholder">Arrastra aquí</div>}
+              {manualTeamA.length < selectedPlayers.length / 2 && <div className="slot-placeholder">Arrastra aquí</div>}
             </div>
           </div>
 
           <div 
-            className={`manual-team drop-zone ${manualTeamB.length < 2 ? 'active' : 'full'}`}
+            className={`manual-team drop-zone ${manualTeamB.length < selectedPlayers.length / 2 ? 'active' : 'full'}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => onDrop(e, 'B')}
           >
@@ -183,7 +186,7 @@ export default function PlayerManager({
                   {j.nombre} <span className="remove-icon">✕</span>
                 </div>
               ))}
-              {manualTeamB.length < 2 && <div className="slot-placeholder">Arrastra aquí</div>}
+              {manualTeamB.length < selectedPlayers.length / 2 && <div className="slot-placeholder">Arrastra aquí</div>}
             </div>
           </div>
         </div>
@@ -270,7 +273,7 @@ export default function PlayerManager({
         </button>
         <button 
           className="manual-btn"
-          disabled={selectedPlayers.length !== 4}
+          disabled={![4, 6].includes(selectedPlayers.length)}
           onClick={iniciarArmadoManual}
         >
           🤝 Armar Manualmente
